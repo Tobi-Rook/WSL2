@@ -11,7 +11,7 @@ function s
 			case '*'
 
 				# Start statement (--> Windows Command Prompt)
-				if echo $argv[$s] | grep -i '^start' | grep -ivq '^[a-z]:\\\\'
+				if echo $argv[$s] | grep -i '^start' | grep -ivq '^[a-z]:'
 					echo "$argv[$s]" | cmd.exe > /dev/null 2> /dev/null
 
 				# Windows file paths / WSL / Linux distributions
@@ -19,13 +19,15 @@ function s
 
 					# Insertion of placeholders for a few incompatible chars
 					set -l file_Path (readlink -f $argv[$s] |
-					tr Ä '{A' | tr Ö '{O' | tr Ü '{U' |
-					tr ä '{a' | tr ö '{o' | tr ü '{u' |
-					tr É '{E' | tr é '{e' | tr ß '{s' |
-					tr Ñ '{N' | tr ñ '{n')
+					tr Ä '{A1' | tr ä '{A2' | tr Å '{A3' | tr å '{A4' |
+					tr É '{E1' | tr é '{E2' |
+					tr Ñ '{N1' | tr ñ '{N2' |
+					tr Ö '{O1' | tr ö '{O2' | tr Ø '{O3' | tr ø '{O4' |
+					tr ß '{S1' |
+					tr Ü '{U1' | tr ü '{U2')
 
 					# Passed Windows file path
-					if echo $argv[$s] | grep -iq '^[a-z]:\\\\'
+					if echo $argv[$s] | grep -iq '^[a-z]:'
 						set -l file_Path_Win (echo $file_Path | sed "s|$PWD||g" | cut -b 2-)
 
 						# .pdf file extension
