@@ -11,7 +11,7 @@ function s
 			case '*'
 
 				# Start statement (--> Windows Command Prompt)
-				if echo $argv[$s] | grep -i '^start' | grep -ivq '^[a-z]:'
+				if echo $argv[$s] | grep -iq '^start'
 					echo "$argv[$s]" | cmd.exe > /dev/null 2> /dev/null
 
 				# Windows file paths / WSL / Linux distributions
@@ -19,12 +19,12 @@ function s
 
 					# Insertion of placeholders for a few incompatible chars
 					set -l file_Path (readlink -f $argv[$s] |
-					tr Ä '{A1' | tr ä '{A2' | tr Å '{A3' | tr å '{A4' |
-					tr É '{E1' | tr é '{E2' |
-					tr Ñ '{N1' | tr ñ '{N2' |
-					tr Ö '{O1' | tr ö '{O2' | tr Ø '{O3' | tr ø '{O4' |
-					tr ß '{S1' |
-					tr Ü '{U1' | tr ü '{U2')
+					tr Ä '{A' | tr ä '{B' | tr Å '{C' | tr å '{D' |
+					tr É '{E' | tr é '{F' |
+					tr Ñ '{G' | tr ñ '{H' |
+					tr Ö '{I' | tr ö '{J' | tr Ø '{K' | tr ø '{L' |
+					tr ẞ '{M' | tr ß '{N' |
+					tr Ü '{O' | tr ü '{P')
 
 					# Passed Windows file path
 					if echo $argv[$s] | grep -iq '^[a-z]:'
@@ -85,7 +85,7 @@ function s
 								echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 							# No file extension
-							else if echo $argv[$s] | grep -iqv '\.'
+							else if echo $argv[$s] | grep -ivq '\.'
 								echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" no \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 							# Other file extensions
