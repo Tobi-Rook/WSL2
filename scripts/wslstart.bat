@@ -4,6 +4,9 @@ IF "%1" == "start" (
 )
 
 SET file_Path=%2
+GOTO:Routines
+
+:Routines
 CALL :Replace file_Path
 GOTO:Execute
 
