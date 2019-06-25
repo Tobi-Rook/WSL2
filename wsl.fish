@@ -47,10 +47,11 @@ function wsl
 			case nu
 				s "start wsl -d Ubuntu"
 			case r
-				while tasklist.exe | grep $argv[(math $wsl+2)] > /dev/null
+				while tasklist.exe | grep -i '$argv[(math $wsl+2)]' > /dev/null
 					sleep 10
 				end
 				rm -f $argv[(math $wsl+1)]
+				set -e process
 				set -e pwd
 				set -g wsl (math $wsl+2)
                         case '*'
