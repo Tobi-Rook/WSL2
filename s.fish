@@ -16,9 +16,14 @@ function s
 
 				# Windows file paths / WSL / Linux distributions
 				else 
+					if echo $argv[$s] | grep -iq '^[a-z]:'
+						set -g tmp (readlink -f $argv[$s] | sed "s|$PWD||g" | cut -b 2-)
+					else
+						set -g tmp (readlink -f $argv[$s])
+					end
 
 					# Insertion of placeholders for a few incompatible chars
-					set -l file_Path (readlink -f $argv[$s] |
+					set -l file_Path (echo $tmp |
 					tr Ä '{A' | tr ä '{B' | tr Å '{C' | tr å '{D' |
 					tr É '{E' | tr é '{F' |
 					tr Ñ '{G' | tr ñ '{H' |
@@ -28,15 +33,14 @@ function s
 
 					# Passed Windows file path
 					if echo $argv[$s] | grep -iq '^[a-z]:'
-						set -l file_Path_Win (echo $file_Path | sed "s|$PWD||g" | cut -b 2-)
 
 						# .exe / .bat / .lnk extension
-						if echo $file_Path_Win | grep -iqE '.exe$|.bat$|.lnk$'
-							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path_Win\"" | cmd.exe > /dev/null 2> /dev/null &
+						if echo $file_Path | grep -iqE '.exe$|.bat$|.lnk$'
+							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# Other file extensions
 						else
-							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" start \"$file_Path_Win\"" | cmd.exe > /dev/null 2> /dev/null &
+							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" start \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 						end
 
 					# Execution within the WSL
@@ -64,7 +68,7 @@ function s
 							cp $argv[$s] /mnt/$DISK/users/$USER/
 							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" start \"$DISK:\Users\%USERNAME%\\$file_Name\" \"$DISK:\\$BROWSER\"" | cmd.exe > /dev/null 2> /dev/null &
 							set -U process (echo $BROWSER | rev | cut -d"\\" -f1 | rev)
-							fish -c 'wsl r '/mnt/$DISK/users/$USER/$argv[$s]' $process' > /dev/null &
+							fish -c 'wsl r '/mnt/$DISK/users/$USER/$argv[$s]' $process' > /dev/null 2> /dev/null &
 
 						# Check if the current distribution is registered as a valid distribution in the WSL (--> $WSL_X_DIR)
 						else if test -n $$WSL_DISTRO_DIR
