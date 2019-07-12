@@ -30,12 +30,8 @@ function s
 					if echo $argv[$s] | grep -iq '^[a-z]:'
 						set -l file_Path_Win (echo $file_Path | sed "s|$PWD||g" | cut -b 2-)
 
-						# .pdf file extension
-						if echo $file_Path_Win | grep -iq '.pdf$'
-							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" pdf \"$file_Path_Win\" \"$DISK:\\$BROWSER\"" | cmd.exe > /dev/null 2> /dev/null &
-
 						# .exe / .bat / .lnk extension
-						else if echo $file_Path_Win | grep -iqE '.exe$|.bat$|.lnk$'
+						if echo $file_Path_Win | grep -iqE '.exe$|.bat$|.lnk$'
 							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path_Win\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# Other file extensions
@@ -49,17 +45,8 @@ function s
 						# Linux file path conversion
 						set -l file_Path_Win (echo $file_Path | sed 's/\//\\\\/g' | cut -b 6- | sed 's/^\(.\{1\}\)/\1:/')
 
-						# .pdf file extension
-						if echo $file_Path_Win | grep -iq '.pdf$'
-							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" pdf \"$file_Path_Win\" \"$DISK:\\$BROWSER\"" | cmd.exe > /dev/null 2> /dev/null &
-
-							# Temporarily required if the function call results in opening a canary / dev / beta build of a Chromium-based browser
-							set -U pwd $PWD
-							set -U process (echo $BROWSER | rev | cut -d"\\" -f1 | rev)
-							fish -c 'wsl r "$pwd/debug.log" $process' > /dev/null &
-
 						# .exe / .bat / .lnk extension or whitespaces in the file's absolute path
-						else if echo $file_Path_Win | grep -iqE '.exe$|.bat$|.lnk$'
+						if echo $file_Path_Win | grep -iqE '.exe$|.bat$|.lnk$'
 							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path_Win\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# Other file extensions
@@ -75,7 +62,7 @@ function s
 						if echo $argv[$s] | grep -iq '.pdf'
 							set -l file_Name (basename $file_Path)
 							cp $argv[$s] /mnt/$DISK/users/$USER/
-							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" pdf \"$DISK:\Users\%USERNAME%\\$file_Name\" \"$DISK:\\$BROWSER\"" | cmd.exe > /dev/null 2> /dev/null &
+							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" start \"$DISK:\Users\%USERNAME%\\$file_Name\" \"$DISK:\\$BROWSER\"" | cmd.exe > /dev/null 2> /dev/null &
 							set -U process (echo $BROWSER | rev | cut -d"\\" -f1 | rev)
 							fish -c 'wsl r '/mnt/$DISK/users/$USER/$argv[$s]' $process' > /dev/null &
 

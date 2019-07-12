@@ -16,9 +16,6 @@ FOR %%i IN ("{A=Ä" "{B=ä" "{C=Å" "{D=å" "{E=É" "{F=é" "{G=Ñ" "{H=ñ" "{I=
 GOTO:EOF
 
 :Execute
-IF "%1" == "pdf" (
-	%3 %file_Path%
-)
 IF "%1" == "no" (
 	notepad.exe %file_Path%
 )
