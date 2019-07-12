@@ -38,6 +38,10 @@ function s
 						if echo $file_Path | grep -iqE '.exe$|.bat$|.lnk$'
 							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
+						# No file extension
+                                                else if echo $file_Path_Win | grep -ivq '\.'
+                                                        echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" no \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+
 						# Other file extensions
 						else
 							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" start \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
@@ -52,6 +56,10 @@ function s
 						# .exe / .bat / .lnk extension or whitespaces in the file's absolute path
 						if echo $file_Path_Win | grep -iqE '.exe$|.bat$|.lnk$'
 							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path_Win\"" | cmd.exe > /dev/null 2> /dev/null &
+
+						# No file extension
+						else if echo $file_Path_Win | grep -ivq '\.'
+							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" no \"$file_Path_Win\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# Other file extensions
 						else
