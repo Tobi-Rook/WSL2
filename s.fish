@@ -18,6 +18,8 @@ function s
 				else 
 					if echo $argv[$s] | grep -iq '^[a-z]:'
 						set -g tmp (readlink -f $argv[$s] | sed "s|$PWD||g" | cut -b 2-)
+					else if readlink -f $argv[$s] | grep -iq '/mnt/[a-z]/'
+						set -g tmp (readlink -f $argv[$s] | sed 's/\//\\\\/g' | cut -b 6- | sed 's/^\(.\{1\}\)/\1:/')
 					else
 						set -g tmp (readlink -f $argv[$s])
 					end
@@ -31,39 +33,20 @@ function s
 					tr ẞ '{M' | tr ß '{N' |
 					tr Ü '{O' | tr ü '{P')
 
-					# Passed Windows file path
-					if echo $argv[$s] | grep -iq '^[a-z]:'
+					# Passed Windows file path / Execution within the WSL
+					if echo $file_Path | grep -iq '^[a-z]:'
 
 						# .exe / .bat / .lnk extension
 						if echo $file_Path | grep -iqE '.exe$|.bat$|.lnk$'
 							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# No file extension
-                                                else if echo $file_Path_Win | grep -ivq '\.'
+                                                else if echo $file_Path | grep -ivq '\.'
                                                         echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" no \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# Other file extensions
 						else
 							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" start \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
-						end
-
-					# Execution within the WSL
-					else if echo $file_Path | grep -iq '/mnt/[a-z]/'
-
-						# Linux file path conversion
-						set -l file_Path_Win (echo $file_Path | sed 's/\//\\\\/g' | cut -b 6- | sed 's/^\(.\{1\}\)/\1:/')
-
-						# .exe / .bat / .lnk extension or whitespaces in the file's absolute path
-						if echo $file_Path_Win | grep -iqE '.exe$|.bat$|.lnk$'
-							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path_Win\"" | cmd.exe > /dev/null 2> /dev/null &
-
-						# No file extension
-						else if echo $file_Path_Win | grep -ivq '\.'
-							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" no \"$file_Path_Win\"" | cmd.exe > /dev/null 2> /dev/null &
-
-						# Other file extensions
-						else
-							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" start \"$file_Path_Win\"" | cmd.exe > /dev/null 2> /dev/null &
 						end
 
 					# Execution within any Linux distribution
