@@ -37,11 +37,11 @@ function s
 					if echo $file_Path | grep -iq '^[a-z]:'
 
 						# .exe / .bat / .lnk extension
-						if echo $file_Path | grep -iqE '.exe$|.bat$|.lnk$'
+						if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -iqE '.exe$|.bat$|.lnk$'
 							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# No file extension
-                                                else if echo $file_Path | grep -ivq '\.'
+                                                else if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -ivq '\.'
                                                         echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" no \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# Other file extensions
@@ -54,7 +54,7 @@ function s
 						set -l WSL_DISTRO_DIR (echo WSL_(echo $WSL_DISTRO_NAME)_DIR)
 
 						# .pdf file extension
-						if echo $argv[$s] | grep -iq '.pdf'
+						if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -iq '.pdf'
 							set -l file_Name (basename $file_Path)
 							cp $argv[$s] /mnt/$DISK/users/$USER/
 							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" start \"$DISK:\Users\%USERNAME%\\$file_Name\" \"$DISK:\\$BROWSER\"" | cmd.exe > /dev/null 2> /dev/null &
@@ -65,11 +65,11 @@ function s
 						else if test -n $$WSL_DISTRO_DIR
 
 							# .exe / .bat / .lnk file extension
-							if echo $argv[$s] | grep -iqE '.exe$|.bat$|.lnk$'
+							if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -iqE '.exe$|.bat$|.lnk$'
 								echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 							# No file extension
-							else if echo $argv[$s] | grep -ivq '\.'
+							else if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -ivq '\.'
 								echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" no \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 							# Other file extensions
