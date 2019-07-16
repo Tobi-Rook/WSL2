@@ -15,6 +15,9 @@ function wsl
 					set -g distro_Name kali-linux
 				case u
 					set -g distro_Name ubuntu
+				case '*'
+					echo "wsl $argv[$wsl]: command not found"
+					break
 				end
 
 				set -l file_Name (echo $argv[(math $wsl+1)])
@@ -47,7 +50,7 @@ function wsl
 			case nu
 				s "start wsl -d Ubuntu"
 			case r
-				while tasklist.exe | grep -i '$argv[(math $wsl+2)]' > /dev/null
+				while tasklist.exe | grep -i $argv[(math $wsl+2)] > /dev/null
 					sleep 10
 				end
 				rm -f $argv[(math $wsl+1)]

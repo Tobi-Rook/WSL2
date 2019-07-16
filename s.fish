@@ -79,7 +79,7 @@ function s
 
 						# Distribution is not compatible / Distribution needs to be registered (--> $WSL_X_DIR)
 						else
-							echo "Operation not supported."
+							echo "s $argv[$s]: operation not supported"
 						end
 					end
 				end
