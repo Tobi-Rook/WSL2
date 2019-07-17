@@ -32,7 +32,8 @@ function wsl
 					mv (readlink -f $file_Name) /mnt/$DISK/users/$USER/$WSL_DIR/$distro_Name/$file_Dir
 				end
 
-				s "$DISK:\Users\%USERNAME%\\$WSL_DIR_WIN\wsl$distro_Name.exe"
+				set -l scripts (echo $WSL_DIR | sed 's/\//\\\\/g')
+				s "$DISK:\Users\%USERNAME%\\$scripts\wsl$distro_Name.exe"
 				set -g wsl (math $wsl+2)
 			case g
 				rsync -a /mnt/$DISK/users/$USER/$WSL_DIR/$WSL_DISTRO_NAME/* ~/
