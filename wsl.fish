@@ -53,7 +53,10 @@ function wsl
 				while tasklist.exe | grep -i $argv[(math $wsl+2)] > /dev/null
 					sleep 10
 				end
+
 				rm -f $argv[(math $wsl+1)]
+
+				set -e file
 				set -e process
 				set -e pwd
 				set -g wsl (math $wsl+2)

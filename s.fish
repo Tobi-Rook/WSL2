@@ -58,8 +58,9 @@ function s
 							set -l file_Name (basename $file_Path)
 							cp $argv[$s] /mnt/$DISK/users/$USER/
 							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" start \"$DISK:\Users\%USERNAME%\\$file_Name\" \"$DISK:\\$BROWSER\"" | cmd.exe > /dev/null 2> /dev/null &
+							set -U file "/mnt/$DISK/users/$USER/$argv[$s]"
 							set -U process (echo $BROWSER | rev | cut -d"\\" -f1 | rev)
-							fish -c 'wsl r '/mnt/$DISK/users/$USER/$argv[$s]' $process' > /dev/null 2> /dev/null &
+							fish -c 'wsl r $file $process' > /dev/null 2> /dev/null &
 
 						# Check if the current distribution is registered as a valid distribution in the WSL (--> $WSL_X_DIR)
 						else if test -n $$WSL_DISTRO_DIR
