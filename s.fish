@@ -16,7 +16,7 @@ function s
 
 				# Windows file paths / WSL / Linux distributions
 				else 
-					if echo $argv[$s] | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%'
+					if echo $argv[$s] | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%'
 						set -g tmp (readlink -f $argv[$s] | sed "s|$PWD||g" | cut -b 2-)
 					else if readlink -f $argv[$s] | grep -iq '/mnt/[a-z]/'
 						set -g tmp (readlink -f $argv[$s] | sed 's/\//\\\\/g' | cut -b 6- | sed 's/^\(.\{1\}\)/\1:/')
@@ -34,7 +34,7 @@ function s
 					tr Ü '{O' | tr ü '{P')
 
 					# Passed Windows file path / Execution within the WSL
-					if echo $file_Path | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%'
+					if echo $file_Path | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%'
 
 						# .exe / .bat / .lnk extension
 						if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -iqE '.exe$|.bat$|.lnk$'
@@ -56,9 +56,14 @@ function s
 						# .pdf file extension
 						if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -iq '.pdf'
 
-							# Get disk and current user
-							set -l disk (cmd.exe /c echo %SYSTEMDRIVE% 2> /dev/null | cut -b 1 | tr '[:upper:]' '[:lower:]')
-							set -l user (cmd.exe /c echo %USERNAME% 2> /dev/null | tr -d '$'\r'')
+							# Get disk and current user if not available
+							if test -z $disk
+								set -U disk (cmd.exe /c echo %SYSTEMDRIVE% 2> /dev/null | cut -b 1 | tr '[:upper:]' '[:lower:]')
+							end
+
+							if test -z $user
+								set -U user (cmd.exe /c echo %USERNAME% 2> /dev/null | tr -d '$'\r'')
+							end
 
 							# Copy the specified file outside the WSL and open it
 							set -l file_Name (basename $file_Path)
