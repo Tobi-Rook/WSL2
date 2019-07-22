@@ -38,15 +38,15 @@ function s
 
 						# .exe / .bat / .lnk extension
 						if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -iqE '.exe$|.bat$|.lnk$'
-							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+							echo "\"%USERPROFILE%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# No file extension
                                                 else if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -ivq '\.'
-                                                        echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" no \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+                                                        echo "\"%USERPROFILE%\\$WSL_DIR\wslstart.bat\" no \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# Other file extensions
 						else
-							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" start \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+							echo "\"%USERPROFILE%\\$WSL_DIR\wslstart.bat\" start \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 						end
 
 					# Execution within any Linux distribution
@@ -55,10 +55,18 @@ function s
 
 						# .pdf file extension
 						if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -iq '.pdf'
+
+							# Get disk and current user
+							set -l disk (cmd.exe /c echo %SYSTEMDRIVE% 2> nul | cut -b 1 | tr '[:upper:]' '[:lower:]')
+							set -l user (cmd.exe /c echo %USERNAME% 2> nul | tr -d '$'\r'')
+
+							# Copy the specified file outside the WSL and open it
 							set -l file_Name (basename $file_Path)
-							cp $argv[$s] /mnt/$DISK/users/$USER/
-							echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" start \"$DISK:\Users\%USERNAME%\\$file_Name\" \"$DISK:\\$BROWSER\"" | cmd.exe > /dev/null 2> /dev/null &
-							set -U file "/mnt/$DISK/users/$USER/$argv[$s]"
+							cp $argv[$s] /mnt/$disk/users/$user/
+							echo "\"%USERPROFILE%\\$WSL_DIR\wslstart.bat\" start \"%USERPROFILE%\\$file_Name\"" | cmd.exe > /dev/null 2> /dev/null &
+
+							# Delete the file after it has been closed
+							set -U file "/mnt/$disk/users/$user/$argv[$s]"
 							set -U process (echo $BROWSER | rev | cut -d"\\" -f1 | rev)
 							fish -c 'wsl r $file $process' > /dev/null 2> /dev/null &
 
@@ -67,15 +75,15 @@ function s
 
 							# .exe / .bat / .lnk file extension
 							if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -iqE '.exe$|.bat$|.lnk$'
-								echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" exe \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+								echo "\"%USERPROFILE%\\$WSL_DIR\wslstart.bat\" exe \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 							# No file extension
 							else if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -ivq '\.'
-								echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" no \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+								echo "\"%USERPROFILE%\\$WSL_DIR\wslstart.bat\" no \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 							# Other file extensions
 							else
-								echo "\"$DISK:\Users\%USERNAME%\\$WSL_DIR\wslstart.bat\" cmd \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null & 
+								echo "\"%USERPROFILE%\\$WSL_DIR\wslstart.bat\" cmd \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 							end
 
 						# Distribution is not compatible / Distribution needs to be registered (--> $WSL_X_DIR)
