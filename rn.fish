@@ -16,7 +16,7 @@ function rn
 			case dc
 				rename 's/.+/our $i; sprintf("'$argv[(math $rn+1)]' %03d", 1+$i++)/e' (ls -p | grep /)
 			case dc'*'
-				set -l number (echo $argv[1] | cut -b 3-)
+				set -l number (echo $argv[$rn] | cut -b 3-)
 				rename 's/.+/our $i; sprintf("'$argv[(math $rn+1)]' %0'$number'd", 1+$i++)/e' (ls -p | grep /)
 			case dd
 				rename 's/'$argv[(math $rn+1)]'//' (ls -p | grep /)
@@ -76,15 +76,12 @@ function rn
 
 			switch (echo $argv[$rn] | cut -b 2)
 			case l u
-				set -g c 1
+				set -g rn (math $rn+1)
 			case c d e p s
-				set -g c 2
+				set -g rn (math $rn+2)
 			case r
-				set -g c 3
+				set -g rn (math $rn+3)
 			end
-
-			set -g rn (math $rn+$c)
 		end
 	end
 end
-
