@@ -7,52 +7,40 @@ function rn
 			switch $argv[$rn]
 			case ad
 				rename 's/'$argv[(math $rn+1)]'//' *
-				set -g rn (math $rn+1)
 			case al
 				rename 'y/A-Z/a-z/' *
 			case ar
 				rename 's/'$argv[(math $rn+1)]'/'$argv[(math $rn+2)]'/' *
-				set -g rn (math $rn+2)
 			case au
 				rename 'y/a-z/A-Z/' *
 			case dc
 				rename 's/.+/our $i; sprintf("'$argv[(math $rn+1)]' %03d", 1+$i++)/e' (ls -p | grep /)
-				set -g rn (math $rn+1)
 			case dc'*'
 				set -l number (echo $argv[1] | cut -b 3-)
 				rename 's/.+/our $i; sprintf("'$argv[(math $rn+1)]' %0'$number'd", 1+$i++)/e' (ls -p | grep /)
-				set -g rn (math $rn+1)
 			case dd
 				rename 's/'$argv[(math $rn+1)]'//' (ls -p | grep /)
-				set -g rn (math $rn+1)
 			case dl
 				rename 'y/A-Z/a-z/' (ls -p | grep /)
 			case dp
 				rename 's/^/'$argv[(math $rn+1)]'/' (ls -p | grep /)
-				set -g rn (math $rn+1)
 			case dr
 				rename 's/'$argv[(math $rn+1)]'/'$argv[(math $rn+2)]'/' (ls -p | grep /)
-				set -g rn (math $rn+2)
 			case ds
 				# rename 's/$/'$argv[(math $rn+1)]'/' (ls -p | grep /)
 				echo "rn ds $argv[(math $rn+1)]: operation not supported"
-				set -g rn (math $rn+1)
 			case du
 				rename 'y/a-z/A-Z/' (ls -p | grep /)
 			case fd
 				rename 's/'$argv[(math $rn+1)]'//' (ls -p | grep -v /)
-				set -g rn (math $rn+1)
 			case fl
 				rename 'y/A-Z/a-z/' (ls -p | grep -v /)
 			case fp
 				rename 's/^/'$argv[(math $rn+1)]'/' (ls -p | grep -v /)
-				set -g rn (math $rn+1)
 			case fr
 				rename 's/'$argv[(math $rn+1)]'/'$argv[(math $rn+2)]'/' (ls -p | grep -v /)
-				set -g rn (math $rn+2)
 			case fs
 				rename 's/$/'$argv[(math $rn+1)]'/' (ls -p | grep -v /)
-				set -g rn (math $rn+1)
 			case fu
 				rename 'y/a-z/A-Z/' (ls -p | grep -v /)
 			case help
@@ -63,14 +51,11 @@ function rn
 					switch $argv[$rn]
 					case fc
 						rename 's/.+/our $i; sprintf("'$argv[(math $rn+1)]' %03d.'$ext'", 1+$i++)/e' (ls -p | grep -v /)
-						set -g rn (math $rn+1)
 					case fc'*'
 						set -l number (echo $argv[$rn] | cut -b 3-)
 						rename 's/.+/our $i; sprintf("'$argv[(math $rn+1)]' %0'$number'd.'$ext'", 1+$i++)/e' (ls -p | grep -v /)
-						set -g rn (math $rn+1)
 					case fe
 						rename 's/\.'$ext'$/\.'$argv[(math $rn+1)]'/' *.$ext
-						set -g rn (math $rn+1)
 					case '*'
 						rename $argv
 					end
@@ -78,20 +63,28 @@ function rn
 					switch $argv[$rn]
 					case fc
 						rename 's/.+/our $i; sprintf("'$argv[(math $rn+1)]' %03d", 1+$i++)/e' (ls -p | grep -v /)
-						set -g rn (math $rn+1)
 					case fc'*'
 						set -l number (echo $argv[$rn] | cut -b 3-)
 						rename 's/.+/our $i; sprintf("'$argv[(math $rn+1)]' %0'$number'd", 1+$i++)/e' (ls -p | grep -v /)
-						set -g rn (math $rn+1)
 					case fe
 						rename 's/$/.'$argv[(math $rn+1)]'/' (ls -p | grep -v /)
-						set -g rn (math $rn+1)
 					case '*'
 						rename $argv
 					end
 				end
 			end
-		set -g rn (math $rn+1)
+
+			switch (echo $argv[$rn] | cut -b 2)
+			case l u
+				set -g c 1
+			case c d e p s
+				set -g c 2
+			case r
+				set -g c 3
+			end
+
+			set -g rn (math $rn+$c)
 		end
 	end
 end
+
