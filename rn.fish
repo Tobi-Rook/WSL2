@@ -48,6 +48,7 @@ function rn
 				rename 's/$/'$argv[(math $rn+1)]'/' (ls -p | grep -v /)
 			case help
 				cat ~/.config/fish/functions/help/rn | less
+				break
 			case '*'
 				if ls -p | grep -v / | head -n1 | rev | cut -b -5 | rev | grep -q '\.'
 					set -l ext (ls -p | grep -v / | head -n1 | rev | cut -d'.' -f1 | rev)
@@ -100,7 +101,7 @@ function rn
 			end
 
 			switch (echo $argv[$rn] | cut -b 2)
-			case help l u
+			case l u
 				set -g rn (math $rn+1)
 			case c d e p s
 				set -g rn (math $rn+2)

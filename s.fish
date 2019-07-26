@@ -8,6 +8,7 @@ function s
 			switch $argv[$s]
 			case help
 				cat ~/.config/fish/functions/help/s | less
+				break
 			case '*'
 
 				# Start statement (--> Windows Command Prompt)

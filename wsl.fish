@@ -40,6 +40,7 @@ function wsl
 				rm -rf /mnt/$disk/users/$user/$WSL_DIR/$WSL_DISTRO_NAME/*
 			case help
 				cat ~/.config/fish/functions/help/wsl | less
+				break
 			case na
 				s "start wsl -d ArchLinux"
 			case nb
