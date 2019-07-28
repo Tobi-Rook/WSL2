@@ -33,7 +33,7 @@ function wsl
 				end
 
 				set -l scripts (echo $WSL_DIR | sed 's/\//\\\\/g')
-				s "%USERPROFILE%\\$scripts\wsl$distro_Name.exe"
+				x "%USERPROFILE%\\$scripts\wsl$distro_Name.exe"
 				set -g wsl (math $wsl+2)
 			case g
 				rsync -a /mnt/$disk/users/$user/$WSL_DIR/$WSL_DISTRO_NAME/* ~/
@@ -42,15 +42,15 @@ function wsl
 				cat ~/.config/fish/functions/help/wsl | less
 				break
 			case na
-				s "start wsl -d ArchLinux"
+				x "start wsl -d ArchLinux"
 			case nb
-				s "start bash"
+				x "start bash"
 			case nc
-				s "start cmd"
+				x "start cmd"
 			case nk
-				s "start wsl -d kali-linux"
+				x "start wsl -d kali-linux"
 			case nu
-				s "start wsl -d Ubuntu"
+				x "start wsl -d Ubuntu"
 			case r
 				while tasklist.exe | grep -i $argv[(math $wsl+2)] > /dev/null
 					sleep 10
