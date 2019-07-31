@@ -34,7 +34,6 @@ function wsl
 
 				set -l scripts (echo $WSL_DIR | sed 's/\//\\\\/g')
 				x "%USERPROFILE%\\$scripts\wsl$distro_Name.exe"
-				set -g wsl (math $wsl+2)
 			case g
 				rsync -a /mnt/$disk/users/$user/$WSL_DIR/$WSL_DISTRO_NAME/* ~/
 				rm -rf /mnt/$disk/users/$user/$WSL_DIR/$WSL_DISTRO_NAME/*
@@ -61,15 +60,48 @@ function wsl
 				set -e file
 				set -e process
 				set -e pwd
-				set -g wsl (math $wsl+2)
 			case sd
 				set -U disk (cmd.exe /c echo %SYSTEMDRIVE% 2> /dev/null | cut -b 1 | tr '[:upper:]' '[:lower:]')
 			case su
 				set -U user (cmd.exe /c echo %USERNAME% 2> /dev/null | tr -d '$'\r'')
+			case t'*'
+				switch (echo $argv[$wsl] | cut -b 2)
+				case r
+					if test "$THEME" = "dark"
+						set -U THEME dark
+						set -e link
+					else
+						set -U THEME light
+						set -l mode (echo $THEME | sed 's/\([a-z]\)\([a-zA-Z]*\)/\u\1\2/g')
+						set -g link " ($mode Mode)"
+					end
+				case '*'
+					if test "$THEME" = "dark"
+						set -U THEME light
+						set -g link " (Light Mode)"
+					else
+						set -U THEME dark
+						set -e link
+					end
+				end
+
+				ln -fs ~/.wsl_config/.colors/$THEME/colorschemes $pythonPackages/powerline/config_files/
+				ln -fs ~/.wsl_config/.colors/$THEME/$hostname/.vimrc ~/.vimrc
+
+				set -l cmd (echo $WSL_DIR | sed 's/\//\\\\/g')
+				echo "\"%USERPROFILE%\\$WSL_DIR\wslexplorer.bat\" \"%USERPROFILE%\\$cmd\Windows Subsystem for Linux$link.lnk\"" | cmd.exe > /dev/null 2> /dev/null
+				wslconfig.exe /t $WSL_DISTRO_NAME &
                         case '*'
                                 echo "wsl $argv[$wsl]: command not found"
 			end
-			set -g wsl (math $wsl+1)
+
+			switch (echo $argv[$wsl] | cut -b 1)
+			case c m r
+				set -g wsl (math $wsl+3)
+			case '*'
+				set -g wsl (math $wsl+1)
+			end
 		end
 	end
 end
+
