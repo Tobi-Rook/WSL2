@@ -6,7 +6,7 @@ function x
 		set -g x 1
 		while ! test -z $argv[$x]
 			switch $argv[$x]
-			case help
+			case h
 				cat ~/.config/fish/functions/help/x | less
 				break
 			case '*'
