@@ -38,6 +38,10 @@ function wsl
 			case h
 				cat ~/.config/fish/functions/help/wsl | less
 				break
+			case k
+				taskkill.exe /fi "IMAGENAME eq "$argv[(math $wsl+1)]"*" /im \* > /dev/null 2> /dev/null
+			case kf
+				taskkill.exe /f /fi "IMAGENAME eq "$argv[(math $wsl+1)]"*" /im \* > /dev/null
 			case na
 				x "start wsl -d ArchLinux"
 			case nb
@@ -84,7 +88,7 @@ function wsl
 
 				set -l cmd (echo $WSL_DIR | sed 's/\//\\\\/g')
 				set -l theme (echo $THEME | sed 's/\([a-z]\)\([a-zA-Z]*\)/\u\1\2/g')
-				echo "\"%USERPROFILE%\\$WSL_DIR\wslrestart.bat\" $WSL_DISTRO_NAME \"%USERPROFILE%\\$cmd\Windows Subsystem for Linux ($theme Theme).lnk\"" | cmd.exe > /dev/null 2> /dev/null
+				echo "\"%USERPROFILE%\\$cmd\wslrestart.bat\" $WSL_DISTRO_NAME \"%USERPROFILE%\\$cmd\Windows Subsystem for Linux ($theme Theme).lnk\"" | cmd.exe > /dev/null 2> /dev/null
                         case '*'
                                 echo "wsl $argv[$wsl]: command not found"
 				break
@@ -93,7 +97,7 @@ function wsl
 			switch (echo $argv[$wsl] | cut -b 1)
 			case c m r
 				set -g wsl (math $wsl+3)
-			case t
+			case k t
 				set -g wsl (math $wsl+2)
 			case '*'
 				set -g wsl (math $wsl+1)

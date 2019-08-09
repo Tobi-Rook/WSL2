@@ -25,14 +25,14 @@ function x
 						set -g tmp (readlink -f $argv[$x])
 					end
 
-					# Insertion of placeholders for a few incompatible chars
+					# Insertion of placeholders for incompatible chars
 					set -l file_Path (echo $tmp |
-					tr Ä '{A' | tr ä '{B' | tr Å '{C' | tr å '{D' |
-					tr É '{E' | tr é '{F' |
-					tr Ñ '{G' | tr ñ '{H' |
-					tr Ö '{I' | tr ö '{J' | tr Ø '{K' | tr ø '{L' |
-					tr ẞ '{M' | tr ß '{N' |
-					tr Ü '{O' | tr ü '{P')
+					tr Ä '{0' | tr ä '{1' | tr Á '{2' | tr á '{3' | tr À '{4' | tr à '{5' | tr Å '{6' | tr å '{7' |
+					tr Ë '{8' | tr ë '{9' | tr É '{A' | tr é '{B' | tr È '{C' | tr è '{D' |
+					tr Ñ '{E' | tr ñ '{F' |
+					tr Ö '{G' | tr ö '{H' | tr Ó '{I' | tr ó '{J' | tr Ò '{K' | tr ò '{L' | tr Ø '{M' | tr ø '{N' |
+					tr ẞ '{O' | tr ß '{P' |
+					tr Ü '{Q' | tr ü '{R' | tr Ú '{S' | tr ú '{T' | tr Ù '{U' | tr ù '{V')
 
 					# Passed Windows file path / Execution within the WSL
 					if echo $file_Path | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%'
@@ -40,6 +40,8 @@ function x
 						# .exe / .bat / .lnk extension
 						if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -iqE '.exe$|.bat$|.lnk$'
 							echo "\"%USERPROFILE%\\$WSL_DIR\wslstart.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+							sleep 1
+							pkill -n cmd.exe
 
 						# No file extension
                                                 else if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -ivq '\.'
@@ -82,6 +84,8 @@ function x
 							# .exe / .bat / .lnk file extension
 							if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -iqE '.exe$|.bat$|.lnk$'
 								echo "\"%USERPROFILE%\\$WSL_DIR\wslstart.bat\" exe \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+								sleep 1
+								pkill -n cmd.exe
 
 							# No file extension
 							else if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -ivq '\.'
