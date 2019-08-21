@@ -18,7 +18,7 @@ function rn
 				set -l digits (echo $argv[$rn] | cut -d'd' -f1 | cut -b 2-)
 				rename 's/.+/our $i; sprintf("'$argv[(math $rn+1)]' %0'$digits'd", 1+$i++)/e' (ls -p | grep /)
 			case h
-				cat ~/.config/fish/functions/help/rn | less
+				cat $WSL_HELP_DIR/rn | less
 				break
 			case ia
 				rename 's/'$argv[(math $rn+1)]'/'$argv[(math $rn+2)]'/' *

@@ -7,10 +7,9 @@ function x
 		while ! test -z $argv[$x]
 			switch $argv[$x]
 			case h
-				cat ~/.config/fish/functions/help/x | less
+				cat $WSL_HELP_DIR/x | less
 				break
 			case '*'
-
 				# Start statement (--> Windows Command Prompt)
 				if echo $argv[$x] | grep -iq '^start'
 					echo "$argv[$x]" | cmd.exe > /dev/null 2> /dev/null
