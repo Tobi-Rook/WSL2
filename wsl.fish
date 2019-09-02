@@ -1,6 +1,6 @@
 function wsl
 	if test (count $argv) -eq 0
-		wsl.exe
+		echo "wt.exe" | cmd.exe > /dev/null 2> /dev/null
 	else
 		set -g wsl 1
 		while ! test -z $argv[$wsl]
@@ -96,9 +96,10 @@ function wsl
 			case xr
 				set -U WSL_RESTART_INFO $PWD (history | head -1)
 				set -U WSL_RESTART_WINS (tmux list-sessions -F "#{session_name}")
-				set -l theme (echo $WSL_PROG_DIR | sed 's/\//\\\\/g') (echo $WSL_THEME_INFO | sed 's/\([a-z]\)\([a-zA-Z]*\)/\u\1\2/g')
+				set -l wsl_prog_dir (echo $WSL_PROG_DIR | sed 's/\//\\\\/g')
 
-				echo "\"%USERPROFILE%\\$theme[1]\wsl_restart.bat\" $WSL_DISTRO_NAME \"%USERPROFILE%\\$theme[1]\Windows Subsystem for Linux ($theme[2] Theme).lnk\"" | cmd.exe > /dev/null 2> /dev/null
+				echo "\"%USERPROFILE%\\$wsl_prog_dir\ColorTool\ColorTool.exe\" -d -x $WSL_THEME_INFO.itermcolors" | cmd.exe > /dev/null 2> /dev/null
+				echo "\"%USERPROFILE%\\$wsl_prog_dir\wsl_restart.bat\" $WSL_DISTRO_NAME" | cmd.exe > /dev/null 2> /dev/null
                         case '*'
                                 echo "wsl $argv[$wsl]: command not found"
 				break
