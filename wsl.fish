@@ -50,11 +50,14 @@ function wsl
 				x "start cmd"
 			case nk
 				x "start wsl -d kali-linux"
+			case nt
+				x "start wt"
 			case nu
 				x "start wsl -d Ubuntu"
 			case q
 				set -e WSL_RESTART_INFO
-				wslconfig.exe /T $WSL_DISTRO_NAME
+				set -e WSL_RESTART_WINS
+				wslconfig.exe /t $WSL_DISTRO_NAME
 			case r
 				while tasklist.exe | grep -i $argv[(math $wsl+2)] > /dev/null
 					sleep 10
@@ -85,10 +88,23 @@ function wsl
 							break
 						end
 					end
+				else
+					set -U WSL_THEME_INFO dark
+					wsl xl xr
 				end
 			case xi
-				for session in $WSL_RESTART_WINS
-					x "start wsl.exe tmux new-session -s $session"
+				if tasklist.exe | grep -i WindowsTerminal.exe > /dev/null
+					for session in $WSL_RESTART_WINS
+						x "start wt"
+					end
+					t ks
+				else if wmic.exe process get name, parentprocessid | grep conhost.exe | grep (wmic.exe process get name, parentprocessid | grep WMIC.exe | tr -d WMIC.exe | tr -d ' ' | tr -d '$'\r'') > /dev/null
+					for session in $WSL_RESTART_WINS
+						x "start wsl tmux new-session -s $session"
+					end
+					t ks
+				else
+					echo "wsl xi: settings not found"
 				end
 			case xl
 				ln -fs ~/.wsl_config/.colors/$WSL_THEME_INFO/colorschemes $WSL_PYPKG_DIR/powerline/config_files/
@@ -98,8 +114,18 @@ function wsl
 				set -U WSL_RESTART_WINS (tmux list-sessions -F "#{session_name}")
 				set -l wsl_prog_dir (echo $WSL_PROG_DIR | sed 's/\//\\\\/g')
 
-				echo "\"%USERPROFILE%\\$wsl_prog_dir\ColorTool\ColorTool.exe\" -d -x $WSL_THEME_INFO.itermcolors" | cmd.exe > /dev/null 2> /dev/null
-				echo "\"%USERPROFILE%\\$wsl_prog_dir\wsl_restart.bat\" $WSL_DISTRO_NAME" | cmd.exe > /dev/null 2> /dev/null
+				if tasklist.exe | grep -i WindowsTerminal.exe > /dev/null && test -z $wsl_restart_inv
+					sed -i "s/\"colorScheme.*/\"colorScheme\" : \"$WSL_THEME_INFO\",/g" $WSL_TERM_DIR
+					echo "\"%USERPROFILE%\\$wsl_prog_dir\wsl_restart.bat\" $WSL_DISTRO_NAME wt" | cmd.exe > /dev/null 2> /dev/null
+				else if wmic.exe process get name, parentprocessid | grep conhost.exe | grep (wmic.exe process get name, parentprocessid | grep WMIC.exe | tr -d WMIC.exe | tr -d ' ' | tr -d '$'\r'') > /dev/null || ! test -z $wsl_restart_inv
+					echo "\"%USERPROFILE%\\$wsl_prog_dir\ColorTool\ColorTool.exe\" -d -x $WSL_THEME_INFO.itermcolors" | cmd.exe > /dev/null 2> /dev/null
+					echo "\"%USERPROFILE%\\$wsl_prog_dir\wsl_restart.bat\" $WSL_DISTRO_NAME wsl" | cmd.exe > /dev/null 2> /dev/null
+				else
+					echo "wsl xr: program not found"
+				end
+			case xri
+				set -g wsl_restart_inv 1
+				wsl xr
                         case '*'
                                 echo "wsl $argv[$wsl]: command not found"
 				break
