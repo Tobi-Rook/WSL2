@@ -31,7 +31,8 @@ function x
 					tr Ñ '{E' | tr ñ '{F' |
 					tr Ö '{G' | tr ö '{H' | tr Ó '{I' | tr ó '{J' | tr Ò '{K' | tr ò '{L' | tr Ø '{M' | tr ø '{N' |
 					tr ẞ '{O' | tr ß '{P' |
-					tr Ü '{Q' | tr ü '{R' | tr Ú '{S' | tr ú '{T' | tr Ù '{U' | tr ù '{V')
+					tr Ü '{Q' | tr ü '{R' | tr Ú '{S' | tr ú '{T' | tr Ù '{U' | tr ù '{V' |
+					tr © '{W' | tr ℗ '{X' | tr ® '{Y' | tr ™ '{Z' )
 
 					# Passed Windows file path / Execution within the WSL
 					if echo $file_Path | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%|^%APPDATA%|^%LOCALAPPDATA%'
