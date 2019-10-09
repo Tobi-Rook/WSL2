@@ -11,6 +11,8 @@ function wsl
 				switch (echo $argv[$wsl] | cut -b 3)
 				case a
 					set -g distro_Name archlinux
+				case d
+					set -g distro_Name debian
 				case k
 					set -g distro_Name kali-linux
 				case u
@@ -48,6 +50,8 @@ function wsl
 				x "start bash"
 			case nc
 				x "start cmd"
+			case nd
+				x "start wsl -d Debian"
 			case nk
 				x "start wsl -d kali-linux"
 			case nt
