@@ -10,9 +10,13 @@ function x
 				cat $WSL_HELP_DIR/x | less
 				break
 			case '*'
-				# Start statement (--> Windows Command Prompt)
+				# Start statements (--> Windows Command Prompt)
 				if echo $argv[$x] | grep -iq '^start'
 					echo "$argv[$x]" | cmd.exe > /dev/null 2> /dev/null
+
+				# Internet adresses
+				else if echo $argv[$x] | grep -qE '^http|www.'
+					echo "\"%SYSTEMDRIVE%\\$WSL_BROWSER_DIR\" \"$argv[$x]\"" | cmd.exe > /dev/null 2> /dev/null
 
 				# Windows file paths / WSL / Linux distributions
 				else 
@@ -87,7 +91,7 @@ function x
 								pkill -n cmd.exe
 
 							# No file extension
-							else if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -ivq '\.'
+							else if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -ivq '\.' || echo $file_Path | rev | cut -d"/" -f1 | rev | grep -q '^\.'
 								echo "\"%USERPROFILE%\\$WSL_PROG_DIR\wsl_start.bat\" no \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 							# Other file extensions
