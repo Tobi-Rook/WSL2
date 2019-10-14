@@ -14,7 +14,7 @@ function x
 				if echo $argv[$x] | grep -iq '^start'
 					echo "$argv[$x]" | cmd.exe > /dev/null 2> /dev/null
 
-				# Internet adresses
+				# Internet addresses
 				else if echo $argv[$x] | grep -qE '^http|www.'
 					echo "\"%SYSTEMDRIVE%\\$WSL_BROWSER_DIR\" \"$argv[$x]\"" | cmd.exe > /dev/null 2> /dev/null
 
