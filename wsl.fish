@@ -112,7 +112,7 @@ function wsl
 				end
 			case xl
 				ln -fs ~/.wsl_config/.colors/$WSL_THEME_INFO/colorschemes $WSL_PYPKG_DIR/powerline/config_files/
-				ln -fs ~/.wsl_config/.colors/$WSL_THEME_INFO/$hostname/.vimrc ~/.vimrc
+				ln -fs ~/.wsl_config/.colors/$WSL_THEME_INFO/.vimrc ~/.vimrc
 			case xr
 				set -U WSL_RESTART_INFO $PWD (history | head -1)
 				set -U WSL_RESTART_WINS (tmux list-sessions -F "#{session_name}")
