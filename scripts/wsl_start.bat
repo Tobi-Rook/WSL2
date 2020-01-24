@@ -18,19 +18,27 @@ GOTO:EOF
 :Execute
 IF "%1" == "no" (
 	notepad.exe %file_Path%
+	GOTO:EOF
 )
 IF "%1" == "no2" (
 	notepads %file_Path%
+	GOTO:EOF
 )
 IF "%1" == "exe" (
 	%file_Path%
 	GOTO:EOF
 )
+IF "%1" == "dir" (
+	explorer.exe %file_Path%
+	GOTO:EOF
+)
 IF "%1" == "start" (
 	%file_Path%
+	GOTO:EOF
 )
 IF "%1" == "cmd" (
 	cmd.exe /c "%file_Path%"
+	GOTO:EOF
 )
 
 GOTO:EOF

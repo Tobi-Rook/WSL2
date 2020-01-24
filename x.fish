@@ -9,6 +9,10 @@ function x
 			case h
 				cat $WSL_HELP_DIR/x | less
 				break
+			case x_rls0
+				set -l file_Path $argv[(math $x+1)]
+				echo "\"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+				break
 			case '*'
 				# Start statements (--> Windows Command Prompt)
 				if echo $argv[$x] | grep -iq '^start'
@@ -20,23 +24,35 @@ function x
 
 				# Windows file paths / WSL / Linux distributions
 				else 
-					if echo $argv[$x] | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%|^%APPDATA%|^%LOCALAPPDATA%'
-						set -g tmp (readlink -f $argv[$x] | sed "s|$PWD||g" | cut -b 2-)
-					else if readlink -f $argv[$x] | grep -iq '/mnt/[a-z]/'
-						set -g tmp (readlink -f $argv[$x] | sed 's/\//\\\\/g' | cut -b 6- | sed 's/^\(.\{1\}\)/\1:/')
+
+					# Function call with performance flag enabled
+					if echo $argv[$x] | grep -q x_rls1
+						set -g tmp $argv[(math $x+1)]
 					else
-						set -g tmp (readlink -f $argv[$x])
+						set -g tmp $argv[$x]
 					end
 
-					# Insertion of placeholders for incompatible chars
-					set -l file_Path (echo $tmp |
-					tr Ä '{0' | tr ä '{1' | tr Á '{2' | tr á '{3' | tr À '{4' | tr à '{5' | tr Å '{6' | tr å '{7' |
-					tr Ë '{8' | tr ë '{9' | tr É '{A' | tr é '{B' | tr È '{C' | tr è '{D' |
-					tr Ñ '{E' | tr ñ '{F' |
-					tr Ö '{G' | tr ö '{H' | tr Ó '{I' | tr ó '{J' | tr Ò '{K' | tr ò '{L' | tr Ø '{M' | tr ø '{N' |
-					tr ẞ '{O' | tr ß '{P' |
-					tr Ü '{Q' | tr ü '{R' | tr Ú '{S' | tr ú '{T' | tr Ù '{U' | tr ù '{V' |
-					tr © '{W' | tr ℗ '{X' | tr ® '{Y' | tr ™ '{Z' )
+					if echo $tmp | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%|^%APPDATA%|^%LOCALAPPDATA%'
+						set -g file_Path (readlink -f $tmp | sed "s|$PWD||g" | cut -b 2-)
+					else if readlink -f $tmp | grep -iq '/mnt/[a-z]/'
+						set -g file_Path (readlink -f $tmp | sed 's/\//\\\\/g' | cut -b 6- | sed 's/^\(.\{1\}\)/\1:/')
+					else
+						set -g file_Path (readlink -f $tmp)
+					end
+
+					# Default function call with character encoding conversion
+					if echo $argv[$x] | grep -qv x_rls1
+
+						# Insertion of placeholders for incompatible chars
+						set -g file_Path (echo $file_Path |
+						tr Ä '{0' | tr ä '{1' | tr Á '{2' | tr á '{3' | tr À '{4' | tr à '{5' | tr Å '{6' | tr å '{7' |
+						tr Ë '{8' | tr ë '{9' | tr É '{A' | tr é '{B' | tr È '{C' | tr è '{D' |
+						tr Ñ '{E' | tr ñ '{F' |
+						tr Ö '{G' | tr ö '{H' | tr Ó '{I' | tr ó '{J' | tr Ò '{K' | tr ò '{L' | tr Ø '{M' | tr ø '{N' |
+						tr ẞ '{O' | tr ß '{P' |
+						tr Ü '{Q' | tr ü '{R' | tr Ú '{S' | tr ú '{T' | tr Ù '{U' | tr ù '{V' |
+						tr © '{W' | tr ℗ '{X' | tr ® '{Y' | tr ™ '{Z' )
+					end
 
 					# Passed Windows file path / Execution within the WSL
 					if echo $file_Path | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%|^%APPDATA%|^%LOCALAPPDATA%'
@@ -46,6 +62,10 @@ function x
 							echo "\"%USERPROFILE%\\$WSL_PROG_DIR\wsl_start.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 							sleep 1
 							pkill -n cmd.exe
+
+						# Directories
+						else if test -d $argv[$x]
+							echo "\"%USERPROFILE%\\$WSL_PROG_DIR\wsl_start.bat\" dir \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# No file extension
                                                 else if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -ivq '\.'
@@ -90,6 +110,10 @@ function x
 								sleep 1
 								pkill -n cmd.exe
 
+							# Directories
+							else if test -d $file_Path
+								editor $file_Path
+
 							# No file extension
 							else if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -ivq '\.' || echo $file_Path | rev | cut -d"/" -f1 | rev | grep -q '^\.'
 								echo "\"%USERPROFILE%\\$WSL_PROG_DIR\wsl_start.bat\" no \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
@@ -103,6 +127,11 @@ function x
 						else
 							echo "x $argv[$x]: operation not supported"
 						end
+					end
+
+					# Function call with performance flag enabled
+					if echo $argv[$x] | grep -q x_rls1
+						break
 					end
 				end
 			end
