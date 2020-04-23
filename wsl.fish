@@ -120,7 +120,7 @@ function wsl
 				set -l wsl_prog_dir (echo $WSL_PROG_DIR | sed 's/\//\\\\/g')
 
 				if tasklist.exe | grep -i WindowsTerminal.exe > /dev/null && test -z $wsl_restart_inv
-					sed -i "s/\"colorScheme.*/\"colorScheme\" : \"$WSL_THEME_INFO\",/g" $WSL_TERM_DIR
+					sed -i "s/\"colorScheme.*/\"colorScheme\": \"$WSL_THEME_INFO\",/g" $WSL_TERM_DIR
 					echo "\"%USERPROFILE%\\$wsl_prog_dir\wsl_restart.bat\" $WSL_DISTRO_NAME wt" | cmd.exe > /dev/null 2> /dev/null
 				else if wmic.exe process get name, parentprocessid | grep conhost.exe | grep (wmic.exe process get name, parentprocessid | grep WMIC.exe | tr -d WMIC.exe | tr -d ' ' | tr -d '$'\r'') > /dev/null || ! test -z $wsl_restart_inv
 					echo "\"%USERPROFILE%\\$wsl_prog_dir\ColorTool\ColorTool.exe\" -d -x $WSL_THEME_INFO.itermcolors" | cmd.exe > /dev/null 2> /dev/null
