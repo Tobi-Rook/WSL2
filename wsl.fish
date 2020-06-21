@@ -1,6 +1,6 @@
 function wsl
 	if test (count $argv) -eq 0
-		echo "wt.exe" | cmd.exe > /dev/null 2> /dev/null
+		x x_rls0 "wt"
 	else
 		set -g wsl 1
 		while ! test -z $argv[$wsl]
@@ -17,6 +17,8 @@ function wsl
 					set -g distro_Name kali-linux
 				case u
 					set -g distro_Name ubuntu
+				case z
+					set -g distro_Name docker-desktop
 				case '*'
 					echo "wsl $argv[$wsl]: command not found"
 					break
@@ -33,7 +35,7 @@ function wsl
 				end
 
 				set -l wsl_prog_dir (echo $WSL_PROG_DIR | sed 's/\//\\\\/g')
-				x "%USERPROFILE%\\$wsl_prog_dir\wsl_"$distro_Name"_get.exe"
+				x "%USERPROFILE%\\$wsl_prog_dir\scripts\wsl_"$distro_Name"_get.exe"
 			case g
 				rsync -a /mnt/$disk/users/$user/$WSL_PROG_DIR/$WSL_DISTRO_NAME/* ~/
 				rm -rf /mnt/$disk/users/$user/$WSL_PROG_DIR/$WSL_DISTRO_NAME/*
@@ -45,19 +47,27 @@ function wsl
 			case kf
 				taskkill.exe /f /fi "IMAGENAME eq "$argv[(math $wsl+1)]"*" /im \* > /dev/null
 			case na
-				x "start wsl -d ArchLinux"
+				x "start wt new-tab -p \"Arch Linux\""
+			case nac
+				x "start wt new-tab -p \"Azure Cloud Shell\""
 			case nb
 				x "start bash"
 			case nc
-				x "start cmd"
+				x "start wt new-tab -p \"Command Prompt\""
 			case nd
-				x "start wsl -d Debian"
+				x "start wt new-tab -p \"Debian\""
+			case ndo
+				x "start wt new-tab -p \"Docker\""
+			case nf
+				x "start wt -F"
+			case ngc
+				x "start wt new-tab -p \"Google Cloud Platform\""
 			case nk
-				x "start wsl -d kali-linux"
-			case nt
-				x "start wt"
+				x "start wt new-tab -p \"Kali Linux\""
+			case nps
+				x "start wt new-tab -p \"PowerShell\""
 			case nu
-				x "start wsl -d Ubuntu"
+				x "start wt new-tab -p \"Ubuntu\""
 			case q
 				set -e WSL_RESTART_INFO
 				set -e WSL_RESTART_WINS
@@ -121,10 +131,10 @@ function wsl
 
 				if tasklist.exe | grep -i WindowsTerminal.exe > /dev/null && test -z $wsl_restart_inv
 					sed -i "s/\"colorScheme.*/\"colorScheme\": \"$WSL_THEME_INFO\",/g" $WSL_TERM_DIR
-					echo "\"%USERPROFILE%\\$wsl_prog_dir\wsl_restart.bat\" $WSL_DISTRO_NAME wt" | cmd.exe > /dev/null 2> /dev/null
+					echo "\"%USERPROFILE%\\$wsl_prog_dir\scripts\wsl_restart.bat\" $WSL_DISTRO_NAME \"wt -F\"" | cmd.exe > /dev/null 2> /dev/null
 				else if wmic.exe process get name, parentprocessid | grep conhost.exe | grep (wmic.exe process get name, parentprocessid | grep WMIC.exe | tr -d WMIC.exe | tr -d ' ' | tr -d '$'\r'') > /dev/null || ! test -z $wsl_restart_inv
 					echo "\"%USERPROFILE%\\$wsl_prog_dir\ColorTool\ColorTool.exe\" -d -x $WSL_THEME_INFO.itermcolors" | cmd.exe > /dev/null 2> /dev/null
-					echo "\"%USERPROFILE%\\$wsl_prog_dir\wsl_restart.bat\" $WSL_DISTRO_NAME wsl" | cmd.exe > /dev/null 2> /dev/null
+					echo "\"%USERPROFILE%\\$wsl_prog_dir\scripts\wsl_restart.bat\" $WSL_DISTRO_NAME wsl" | cmd.exe > /dev/null 2> /dev/null
 				else
 					echo "wsl xr: program not found"
 				end

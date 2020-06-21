@@ -16,12 +16,8 @@ FOR %%i IN ("{0=Ä" "{1=ä" "{2=Á" "{3=á" "{4=À" "{5=à" "{6=Å" "{7=å" "{8=
 GOTO:EOF
 
 :Execute
-IF "%1" == "no" (
-	notepad.exe %file_Path%
-	GOTO:EOF
-)
-IF "%1" == "no2" (
-	notepads %file_Path%
+IF "%1" == "code" (
+	code %file_Path%
 	GOTO:EOF
 )
 IF "%1" == "exe" (
@@ -29,7 +25,7 @@ IF "%1" == "exe" (
 	GOTO:EOF
 )
 IF "%1" == "dir" (
-	explorer.exe %file_Path%
+	explorer %file_Path%
 	GOTO:EOF
 )
 IF "%1" == "start" (
@@ -37,7 +33,7 @@ IF "%1" == "start" (
 	GOTO:EOF
 )
 IF "%1" == "cmd" (
-	cmd.exe /c "%file_Path%"
+	cmd /c "%file_Path%"
 	GOTO:EOF
 )
 
