@@ -68,8 +68,8 @@ function x
 							echo "\"%USERPROFILE%\\$WSL_PROG_DIR\scripts\wsl_start.bat\" dir \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# No file extension
-                                                else if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -ivq '\.'
-                                                        echo "\"%USERPROFILE%\\$WSL_PROG_DIR\scripts\wsl_start.bat\" code \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+						else if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -ivq '\.'
+							echo "\"%USERPROFILE%\\$WSL_PROG_DIR\scripts\wsl_start.bat\" code \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# Other file extensions
 						else

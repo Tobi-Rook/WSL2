@@ -141,8 +141,8 @@ function wsl
 			case xri
 				set -g wsl_restart_inv 1
 				wsl xr
-                        case '*'
-                                echo "wsl $argv[$wsl]: command not found"
+			case '*'
+				echo "wsl $argv[$wsl]: command not found"
 				break
 			end
 
