@@ -25,20 +25,20 @@ function wsl
 				end
 
 				set -l file $argv[(math $wsl+1)] $argv[(math $wsl+2)]
-				mkdir -p /mnt/$disk/users/$user/$WSL_PROG_DIR/$distro_Name/$file[1]
+				mkdir -p $WSL_PROG_DIR/$distro_Name/$file[1]
 
 				switch (echo $argv[$wsl] | cut -b -2)
 				case cp
-					cp -r (readlink -f $file[2]) /mnt/$disk/users/$user/$WSL_PROG_DIR/$distro_Name/$file[1]
+					cp -r (readlink -f $file[2]) $WSL_PROG_DIR/$distro_Name/$file[1]
 				case mv
-					mv (readlink -f $file[2]) /mnt/$disk/users/$user/$WSL_PROG_DIR/$distro_Name/$file[1]
+					mv (readlink -f $file[2]) $WSL_PROG_DIR/$distro_Name/$file[1]
 				end
 
 				set -l wsl_prog_dir (echo $WSL_PROG_DIR | sed 's/\//\\\\/g')
-				x "%USERPROFILE%\\$wsl_prog_dir\scripts\wsl_"$distro_Name"_get.exe"
+				x "$wsl_prog_dir\scripts\wsl_"$distro_Name"_get.exe"
 			case g
-				rsync -a /mnt/$disk/users/$user/$WSL_PROG_DIR/$WSL_DISTRO_NAME/* ~/
-				rm -rf /mnt/$disk/users/$user/$WSL_PROG_DIR/$WSL_DISTRO_NAME/*
+				rsync -a $WSL_PROG_DIR/$WSL_DISTRO_NAME/* ~/
+				rm -rf $WSL_PROG_DIR/$WSL_DISTRO_NAME/*
 			case h
 				cat $WSL_HELP_DIR/wsl | less
 				break
@@ -131,10 +131,10 @@ function wsl
 
 				if tasklist.exe | grep -i WindowsTerminal.exe > /dev/null && test -z $wsl_restart_inv
 					sed -i "s/\"colorScheme.*/\"colorScheme\": \"$WSL_THEME_INFO\",/g" $WSL_TERM_DIR
-					echo "\"%USERPROFILE%\\$wsl_prog_dir\scripts\wsl_restart.bat\" $WSL_DISTRO_NAME \"wt -F\"" | cmd.exe > /dev/null 2> /dev/null
+					echo "\"$wsl_prog_dir\scripts\wsl_restart.bat\" $WSL_DISTRO_NAME \"wt -F\"" | cmd.exe > /dev/null 2> /dev/null
 				else if wmic.exe process get name, parentprocessid | grep conhost.exe | grep (wmic.exe process get name, parentprocessid | grep WMIC.exe | tr -d WMIC.exe | tr -d ' ' | tr -d '$'\r'') > /dev/null || ! test -z $wsl_restart_inv
-					echo "\"%USERPROFILE%\\$wsl_prog_dir\ColorTool\ColorTool.exe\" -d -x $WSL_THEME_INFO.itermcolors" | cmd.exe > /dev/null 2> /dev/null
-					echo "\"%USERPROFILE%\\$wsl_prog_dir\scripts\wsl_restart.bat\" $WSL_DISTRO_NAME wsl" | cmd.exe > /dev/null 2> /dev/null
+					echo "\"$wsl_prog_dir\ColorTool\ColorTool.exe\" -d -x $WSL_THEME_INFO.itermcolors" | cmd.exe > /dev/null 2> /dev/null
+					echo "\"$wsl_prog_dir\scripts\wsl_restart.bat\" $WSL_DISTRO_NAME wsl" | cmd.exe > /dev/null 2> /dev/null
 				else
 					echo "wsl xr: program not found"
 				end

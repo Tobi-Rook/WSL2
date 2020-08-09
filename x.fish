@@ -32,7 +32,7 @@ function x
 						set -g tmp $argv[$x]
 					end
 
-					if echo $tmp | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%|^%APPDATA%|^%LOCALAPPDATA%'
+					if echo $tmp | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%|^%APPDATA%|^%LOCALAPPDATA%|^%OneDrive%'
 						set -g file_Path (readlink -f $tmp | sed "s|$PWD||g" | cut -b 2-)
 					else if readlink -f $tmp | grep -iq '/mnt/[a-z]/'
 						set -g file_Path (readlink -f $tmp | sed 's/\//\\\\/g' | cut -b 6- | sed 's/^\(.\{1\}\)/\1:/')
@@ -55,25 +55,25 @@ function x
 					end
 
 					# Passed Windows file path / Execution within the WSL
-					if echo $file_Path | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%|^%APPDATA%|^%LOCALAPPDATA%'
+					if echo $file_Path | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%|^%APPDATA%|^%LOCALAPPDATA%|^%OneDrive%'
 
 						# .exe / .bat / .lnk extension
 						if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -iqE '.exe$|.bat$|.lnk$'
-							echo "\"%USERPROFILE%\\$WSL_PROG_DIR\scripts\wsl_start.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+							echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 							sleep 1
 							pkill -n cmd.exe
 
 						# Directories
 						else if test -d $argv[$x]
-							echo "\"%USERPROFILE%\\$WSL_PROG_DIR\scripts\wsl_start.bat\" dir \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+							echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" dir \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# No file extension
 						else if echo $file_Path | rev | cut -d"\\" -f1 | rev | grep -ivq '\.'
-							echo "\"%USERPROFILE%\\$WSL_PROG_DIR\scripts\wsl_start.bat\" code \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+							echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" code \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# Other file extensions
 						else
-							echo "\"%USERPROFILE%\\$WSL_PROG_DIR\scripts\wsl_start.bat\" start \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+							echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" start \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 						end
 
 					# Execution within any Linux distribution
@@ -95,7 +95,7 @@ function x
 							# Copy the specified file outside the WSL and open it
 							set -l file_Name (basename $file_Path)
 							cp $argv[$x] /mnt/$disk/users/$user/
-							echo "\"%USERPROFILE%\\$WSL_PROG_DIR\scripts\wsl_start.bat\" start \"%USERPROFILE%\\$file_Name\"" | cmd.exe > /dev/null 2> /dev/null &
+							echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" start \"%USERPROFILE%\\$file_Name\"" | cmd.exe > /dev/null 2> /dev/null &
 
 							# Delete the file after it has been closed
 							set -U WSL_REMOVE_INFO "/mnt/$disk/users/$user/$argv[$x]" (echo $WSL_BROWSER_DIR | rev | cut -d"\\" -f1 | rev)
@@ -106,7 +106,7 @@ function x
 
 							# .exe / .bat / .lnk file extension
 							if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -iqE '.exe$|.bat$|.lnk$'
-								echo "\"%USERPROFILE%\\$WSL_PROG_DIR\scripts\wsl_start.bat\" exe \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+								echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" exe \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 								sleep 1
 								pkill -n cmd.exe
 
@@ -116,11 +116,11 @@ function x
 
 							# No file extension
 							else if echo $file_Path | rev | cut -d"/" -f1 | rev | grep -ivq '\.' || echo $file_Path | rev | cut -d"/" -f1 | rev | grep -q '^\.'
-								echo "\"%USERPROFILE%\\$WSL_PROG_DIR\scripts\wsl_start.bat\" code \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+								echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" code \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 							# Other file extensions
 							else
-								echo "\"%USERPROFILE%\\$WSL_PROG_DIR\scripts\wsl_start.bat\" cmd \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+								echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" cmd \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 							end
 
 						# Distribution is not compatible / Distribution needs to be registered (--> $WSL_X_DIR)
