@@ -1,7 +1,7 @@
 function x
 	# Default case
 	if test (count $argv) -eq 0
-		cat /etc/*-release
+		cat /etc/{*-release, *_version}
 	else
 		set -g x 1
 		while ! test -z $argv[$x]
@@ -44,14 +44,28 @@ function x
 					if echo $argv[$x] | grep -qv x_rls1
 
 						# Insertion of placeholders for incompatible chars
-						set -g file_Path (echo $file_Path |
-						tr Ä '{0' | tr ä '{1' | tr Á '{2' | tr á '{3' | tr À '{4' | tr à '{5' | tr Å '{6' | tr å '{7' |
-						tr Ë '{8' | tr ë '{9' | tr É '{A' | tr é '{B' | tr È '{C' | tr è '{D' |
-						tr Ñ '{E' | tr ñ '{F' |
-						tr Ö '{G' | tr ö '{H' | tr Ó '{I' | tr ó '{J' | tr Ò '{K' | tr ò '{L' | tr Ø '{M' | tr ø '{N' |
-						tr ẞ '{O' | tr ß '{P' |
-						tr Ü '{Q' | tr ü '{R' | tr Ú '{S' | tr ú '{T' | tr Ù '{U' | tr ù '{V' |
-						tr © '{W' | tr ℗ '{X' | tr ® '{Y' | tr ™ '{Z' )
+						set -g file_Path (echo $file_Path | sed                            \
+						    -e 's/Ä/{00/g;      s/Á/{01/g;      s/À/{02/g;      s/Å/{03/g' \
+						    -e 's/ä/{04/g;      s/á/{05/g;      s/à/{06/g;      s/å/{07/g' \
+						    -e 's/Æ/{08/g;      s/æ/{09/g'                                 \
+						    -e 's/Ç/{10/g;      s/ç/{11/g'                                 \
+						    -e 's/Ë/{12/g;      s/É/{13/g;      s/È/{14/g'                 \
+						    -e 's/ë/{15/g;      s/é/{16/g;      s/è/{17/g'                 \
+						    -e 's/Ğ/{18/g'                                                 \
+						    -e 's/ğ/{19/g'                                                 \
+						    -e 's/Ï/{20/g;      s/Î/{21/g'                                 \
+						    -e 's/ï/{22/g;      s/î/{23/g'                                 \
+						    -e 's/Ñ/{24/g'                                                 \
+						    -e 's/ñ/{25/g'                                                 \
+						    -e 's/Ö/{26/g;      s/Ó/{27/g;      s/Ò/{28/g;      s/Ø/{29/g' \
+						    -e 's/ö/{30/g;      s/ó/{31/g;      s/ò/{32/g;      s/ø/{33/g' \
+						    -e 's/ẞ/{34/g;      s/Ş/{35/g'                                 \
+						    -e 's/ß/{36/g;      s/ş/{37/g'                                 \
+						    -e 's/Ü/{38/g;      s/Ú/{39/g;      s/Ù/{40/g'                 \
+						    -e 's/ü/{41/g;      s/ú/{42/g;      s/ù/{43/g'                 \
+						    -e 's/Ÿ/{44/g'                                                 \
+						    -e 's/ÿ/{45/g'                                                 \
+						    -e 's/©/{46/g;      s/℗/{47/g;      s/®/{48/g;      s/™/{49/g' )
 					end
 
 					# Passed Windows file path / Execution within the WSL
