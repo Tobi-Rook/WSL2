@@ -1,6 +1,6 @@
 function wsl
 	if test (count $argv) -eq 0
-		x x_rls0 "wt"
+		x_wsl x_rls0 "wt"
 	else
 		set -g wsl 1
 		while ! test -z $argv[$wsl]
@@ -35,7 +35,7 @@ function wsl
 				end
 
 				set -l wsl_prog_dir (echo $WSL_PROG_DIR | sed 's/\//\\\\/g')
-				x "$wsl_prog_dir\scripts\wsl_"$distro_Name"_get.exe"
+				x_wsl "$wsl_prog_dir\scripts\wsl_"$distro_Name"_get.exe"
 			case g
 				rsync -a $WSL_PROG_DIR/$WSL_DISTRO_NAME/* ~/
 				rm -rf $WSL_PROG_DIR/$WSL_DISTRO_NAME/*
@@ -47,27 +47,27 @@ function wsl
 			case kf
 				taskkill.exe /f /fi "IMAGENAME eq "$argv[(math $wsl+1)]"*" /im \* > /dev/null
 			case na
-				x "start wt new-tab -p \"Arch Linux\""
+				x_wsl "start wt new-tab -p \"Arch Linux\""
 			case nac
-				x "start wt new-tab -p \"Azure Cloud Shell\""
+				x_wsl "start wt new-tab -p \"Azure Cloud Shell\""
 			case nb
-				x "start bash"
+				x_wsl "start bash"
 			case nc
-				x "start wt new-tab -p \"Command Prompt\""
+				x_wsl "start wt new-tab -p \"Command Prompt\""
 			case nd
-				x "start wt new-tab -p \"Debian\""
+				x_wsl "start wt new-tab -p \"Debian\""
 			case ndo
-				x "start wt new-tab -p \"Docker\""
+				x_wsl "start wt new-tab -p \"Docker\""
 			case nf
-				x "start wt -F"
+				x_wsl "start wt -F"
 			case ngc
-				x "start wt new-tab -p \"Google Cloud Platform\""
+				x_wsl "start wt new-tab -p \"Google Cloud Platform\""
 			case nk
-				x "start wt new-tab -p \"Kali Linux\""
+				x_wsl "start wt new-tab -p \"Kali Linux\""
 			case nps
-				x "start wt new-tab -p \"PowerShell\""
+				x_wsl "start wt new-tab -p \"PowerShell\""
 			case nu
-				x "start wt new-tab -p \"Ubuntu\""
+				x_wsl "start wt new-tab -p \"Ubuntu\""
 			case q
 				set -e WSL_RESTART_INFO
 				set -e WSL_RESTART_WINS
@@ -109,12 +109,12 @@ function wsl
 			case xi
 				if tasklist.exe | grep -i WindowsTerminal.exe > /dev/null
 					for session in $WSL_RESTART_WINS
-						x "start wt"
+						x_wsl "start wt"
 					end
 					t ks
 				else if wmic.exe process get name, parentprocessid | grep conhost.exe | grep (wmic.exe process get name, parentprocessid | grep WMIC.exe | tr -d WMIC.exe | tr -d ' ' | tr -d '$'\r'') > /dev/null
 					for session in $WSL_RESTART_WINS
-						x "start wsl tmux new-session -s $session"
+						x_wsl "start wsl tmux new-session -s $session"
 					end
 					t ks
 				else
@@ -157,4 +157,3 @@ function wsl
 		end
 	end
 end
-

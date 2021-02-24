@@ -1,35 +1,35 @@
-function x
+function x_wsl
 	# Default case
 	if test (count $argv) -eq 0
 		cat /etc/{*-release, *_version}
 	else
-		set -g x 1
-		while ! test -z $argv[$x]
-			switch $argv[$x]
+		set -g x_wsl 1
+		while ! test -z $argv[$x_wsl]
+			switch $argv[$x_wsl]
 			case h
-				cat $WSL_HELP_DIR/x | less
+				cat $WSL_HELP_DIR/x_wsl | less
 				break
 			case x_rls0
-				set -l file_Path $argv[(math $x+1)]
+				set -l file_Path $argv[(math $x_wsl+1)]
 				echo "\"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 				break
 			case '*'
 				# Start statements (--> Windows Command Prompt)
-				if echo $argv[$x] | grep -iq '^start'
-					echo "$argv[$x]" | cmd.exe > /dev/null 2> /dev/null
+				if echo $argv[$x_wsl] | grep -iq '^start'
+					echo "$argv[$x_wsl]" | cmd.exe > /dev/null 2> /dev/null
 
 				# Internet addresses
-				else if echo $argv[$x] | grep -qE '^http|www.'
-					echo "\"%SYSTEMDRIVE%\\$WSL_BROWSER_DIR\" \"$argv[$x]\"" | cmd.exe > /dev/null 2> /dev/null
+				else if echo $argv[$x_wsl] | grep -qE '^http|www.'
+					echo "\"%SYSTEMDRIVE%\\$WSL_BROWSER_DIR\" \"$argv[$x_wsl]\"" | cmd.exe > /dev/null 2> /dev/null
 
 				# Windows file paths / WSL / Linux distributions
-				else 
+				else
 
 					# Function call with performance flag enabled
-					if echo $argv[$x] | grep -q x_rls1
-						set -g tmp $argv[(math $x+1)]
+					if echo $argv[$x_wsl] | grep -q x_rls1
+						set -g tmp $argv[(math $x_wsl+1)]
 					else
-						set -g tmp $argv[$x]
+						set -g tmp $argv[$x_wsl]
 					end
 
 					if echo $tmp | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%|^%APPDATA%|^%LOCALAPPDATA%|^%OneDrive%'
@@ -41,7 +41,7 @@ function x
 					end
 
 					# Default function call with character encoding conversion
-					if echo $argv[$x] | grep -qv x_rls1
+					if echo $argv[$x_wsl] | grep -qv x_rls1
 
 						# Insertion of placeholders for incompatible chars
 						set -g file_Path (echo $file_Path | sed                            \
@@ -78,7 +78,7 @@ function x
 							pkill -n cmd.exe
 
 						# Directories
-						else if test -d $argv[$x]
+						else if test -d $argv[$x_wsl]
 							echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" dir \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
 						# No file extension
@@ -108,11 +108,11 @@ function x
 
 							# Copy the specified file outside the WSL and open it
 							set -l file_Name (basename $file_Path)
-							cp $argv[$x] /mnt/$disk/users/$user/
+							cp $argv[$x_wsl] /mnt/$disk/users/$user/
 							echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" start \"%USERPROFILE%\\$file_Name\"" | cmd.exe > /dev/null 2> /dev/null &
 
 							# Delete the file after it has been closed
-							set -U WSL_REMOVE_INFO "/mnt/$disk/users/$user/$argv[$x]" (echo $WSL_BROWSER_DIR | rev | cut -d"\\" -f1 | rev)
+							set -U WSL_REMOVE_INFO "/mnt/$disk/users/$user/$argv[$x_wsl]" (echo $WSL_BROWSER_DIR | rev | cut -d"\\" -f1 | rev)
 							fish -c 'wsl r $WSL_REMOVE_INFO' > /dev/null 2> /dev/null &
 
 						# Check if the current distribution is registered as a valid distribution in the WSL (--> $WSL_X_DIR)
@@ -139,18 +139,17 @@ function x
 
 						# Distribution is not compatible / Distribution needs to be registered (--> $WSL_X_DIR)
 						else
-							echo "x $argv[$x]: operation not supported"
+							echo "x_wsl $argv[$x_wsl]: operation not supported"
 						end
 					end
 
 					# Function call with performance flag enabled
-					if echo $argv[$x] | grep -q x_rls1
+					if echo $argv[$x_wsl] | grep -q x_rls1
 						break
 					end
 				end
 			end
-			set -g x (math $x+1)
+			set -g x_wsl (math $x_wsl+1)
 		end
 	end
 end
-
