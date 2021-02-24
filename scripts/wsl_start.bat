@@ -1,7 +1,7 @@
 SETLOCAL EnableDelayedExpansion
 IF "%1" == "start" (
-	SET file_Path="%~2"
-	GOTO:Routines
+  SET file_Path="%~2"
+  GOTO:Routines
 )
 
 SET file_Path=%2
@@ -17,25 +17,24 @@ GOTO:EOF
 
 :Execute
 IF "%1" == "code" (
-	code %file_Path%
-	GOTO:EOF
+  code %file_Path%
+  GOTO:EOF
 )
 IF "%1" == "exe" (
-	%file_Path%
-	GOTO:EOF
+  %file_Path%
+  GOTO:EOF
 )
 IF "%1" == "dir" (
-	explorer %file_Path%
-	GOTO:EOF
+  explorer %file_Path%
+  GOTO:EOF
 )
 IF "%1" == "start" (
-	%file_Path%
-	GOTO:EOF
+  %file_Path%
+  GOTO:EOF
 )
 IF "%1" == "cmd" (
-	cmd /c "%file_Path%"
-	GOTO:EOF
+  cmd /c "%file_Path%"
+  GOTO:EOF
 )
 
 GOTO:EOF
-
