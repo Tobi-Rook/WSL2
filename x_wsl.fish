@@ -7,7 +7,7 @@ function x_wsl
     while ! test -z $argv[$x_wsl]
       switch $argv[$x_wsl]
       case h
-        cat $WSL_HELP_DIR/x_wsl | less
+        cat $WSL_HELP_DIR/x_wsl
         break
       case x_rls0
         set -l file_Path $argv[(math $x_wsl+1)]

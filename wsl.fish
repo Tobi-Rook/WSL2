@@ -40,7 +40,7 @@ function wsl
         rsync -a $WSL_PROG_DIR/$WSL_DISTRO_NAME/* ~/
         rm -rf $WSL_PROG_DIR/$WSL_DISTRO_NAME/*
       case h
-        cat $WSL_HELP_DIR/wsl | less
+        cat $WSL_HELP_DIR/wsl
         break
       case k
         taskkill.exe /fi "IMAGENAME eq "$argv[(math $wsl+1)]"*" /im \* > /dev/null 2> /dev/null

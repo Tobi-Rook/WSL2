@@ -46,7 +46,7 @@ function rn_wsl
         end
         set -g rn_wsl (math $rn_wsl+1)
       case h
-        cat $WSL_HELP_DIR/rn_wsl | less
+        cat $WSL_HELP_DIR/rn_wsl
         break
       case ia
         rename 's/'$argv[(math $rn_wsl+1)]'/'$argv[(math $rn_wsl+2)]'/' *
