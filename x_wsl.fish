@@ -1,35 +1,37 @@
-function x_wsl
+set -g func x_wsl
+
+function $func
   # Default case
   if test (count $argv) -eq 0
     cat /etc/{*-release, *_version}
   else
-    set -g x_wsl 1
-    while ! test -z $argv[$x_wsl]
-      switch $argv[$x_wsl]
+    set -g $func 1
+    while ! test -z $argv[$$func]
+      switch $argv[$$func]
       case h
-        cat $WSL_HELP_DIR/x_wsl
+        cat $WSL_HELP_DIR/$func
         break
       case x_rls0
-        set -l file_Path $argv[(math $x_wsl+1)]
+        set -l file_Path $argv[(math $$func+1)]
         echo "\"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
         break
       case '*'
         # Start statements (--> Windows Command Prompt)
-        if echo $argv[$x_wsl] | grep -iq '^start'
-          echo "$argv[$x_wsl]" | cmd.exe > /dev/null 2> /dev/null
+        if echo $argv[$$func] | grep -iq '^start'
+          echo "$argv[$$func]" | cmd.exe > /dev/null 2> /dev/null
 
         # Internet addresses
-        else if echo $argv[$x_wsl] | grep -qE '^http|www.'
-          echo "\"%SYSTEMDRIVE%\\$WSL_BROWSER_DIR\" \"$argv[$x_wsl]\"" | cmd.exe > /dev/null 2> /dev/null
+        else if echo $argv[$$func] | grep -qE '^http|www.'
+          echo "\"%SYSTEMDRIVE%\\$WSL_BROWSER_DIR\" \"$argv[$$func]\"" | cmd.exe > /dev/null 2> /dev/null
 
         # Windows file paths / WSL / Linux distributions
         else
 
           # Function call with performance flag enabled
-          if echo $argv[$x_wsl] | grep -q x_rls1
-            set -g tmp $argv[(math $x_wsl+1)]
+          if echo $argv[$$func] | grep -q x_rls1
+            set -g tmp $argv[(math $$func+1)]
           else
-            set -g tmp $argv[$x_wsl]
+            set -g tmp $argv[$$func]
           end
 
           if echo $tmp | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%|^%APPDATA%|^%LOCALAPPDATA%|^%OneDrive%'
@@ -41,7 +43,7 @@ function x_wsl
           end
 
           # Default function call with character encoding conversion
-          if echo $argv[$x_wsl] | grep -qv x_rls1
+          if echo $argv[$$func] | grep -qv x_rls1
 
             # Insertion of placeholders for incompatible chars
             set -g file_Path (echo $file_Path | sed                            \
@@ -78,7 +80,7 @@ function x_wsl
               pkill -n cmd.exe
 
             # Directories
-            else if test -d $argv[$x_wsl]
+            else if test -d $argv[$$func]
               echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" dir \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
 
             # No file extension
@@ -108,11 +110,11 @@ function x_wsl
 
               # Copy the specified file outside the WSL and open it
               set -l file_Name (basename $file_Path)
-              cp $argv[$x_wsl] /mnt/$disk/users/$user/
+              cp $argv[$$func] /mnt/$disk/users/$user/
               echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" start \"%USERPROFILE%\\$file_Name\"" | cmd.exe > /dev/null 2> /dev/null &
 
               # Delete the file after it has been closed
-              set -U WSL_REMOVE_INFO "/mnt/$disk/users/$user/$argv[$x_wsl]" (echo $WSL_BROWSER_DIR | rev | cut -d"\\" -f1 | rev)
+              set -U WSL_REMOVE_INFO "/mnt/$disk/users/$user/$argv[$$func]" (echo $WSL_BROWSER_DIR | rev | cut -d"\\" -f1 | rev)
               fish -c 'wsl r $WSL_REMOVE_INFO' > /dev/null 2> /dev/null &
 
             # Check if the current distribution is registered as a valid distribution in the WSL (--> $WSL_X_DIR)
@@ -139,17 +141,17 @@ function x_wsl
 
             # Distribution is not compatible / Distribution needs to be registered (--> $WSL_X_DIR)
             else
-              echo "x_wsl $argv[$x_wsl]: operation not supported"
+              echo "$func $argv[$$func]: operation not supported"
             end
           end
 
           # Function call with performance flag enabled
-          if echo $argv[$x_wsl] | grep -q x_rls1
+          if echo $argv[$$func] | grep -q x_rls1
             break
           end
         end
       end
-      set -g x_wsl (math $x_wsl+1)
+      set -g $func (math $$func+1)
     end
   end
 end

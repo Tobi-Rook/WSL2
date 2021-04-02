@@ -1,14 +1,16 @@
-function wsl
+set -g func wsl
+
+function $func
   if test (count $argv) -eq 0
     x_wsl x_rls0 "wt"
   else
-    set -g wsl 1
-    while ! test -z $argv[$wsl]
-      switch $argv[$wsl]
+    set -g $func 1
+    while ! test -z $argv[$$func]
+      switch $argv[$$func]
       case cmd
         cmd.exe 2> /dev/null
       case cp'*' mv'*'
-        switch (echo $argv[$wsl] | cut -b 3)
+        switch (echo $argv[$$func] | cut -b 3)
         case a
           set -g distro_Name archlinux
         case d
@@ -20,14 +22,14 @@ function wsl
         case z
           set -g distro_Name docker-desktop
         case '*'
-          echo "wsl $argv[$wsl]: command not found"
+          echo "$func $argv[$$func]: command not found"
           break
         end
 
-        set -l file $argv[(math $wsl+1)] $argv[(math $wsl+2)]
+        set -l file $argv[(math $$func+1)] $argv[(math $$func+2)]
         mkdir -p $WSL_PROG_DIR/$distro_Name/$file[1]
 
-        switch (echo $argv[$wsl] | cut -b -2)
+        switch (echo $argv[$$func] | cut -b -2)
         case cp
           cp -r (readlink -f $file[2]) $WSL_PROG_DIR/$distro_Name/$file[1]
         case mv
@@ -40,12 +42,12 @@ function wsl
         rsync -a $WSL_PROG_DIR/$WSL_DISTRO_NAME/* ~/
         rm -rf $WSL_PROG_DIR/$WSL_DISTRO_NAME/*
       case h
-        cat $WSL_HELP_DIR/wsl
+        cat $WSL_HELP_DIR/$func
         break
       case k
-        taskkill.exe /fi "IMAGENAME eq "$argv[(math $wsl+1)]"*" /im \* > /dev/null 2> /dev/null
+        taskkill.exe /fi "IMAGENAME eq "$argv[(math $$func+1)]"*" /im \* > /dev/null 2> /dev/null
       case kf
-        taskkill.exe /f /fi "IMAGENAME eq "$argv[(math $wsl+1)]"*" /im \* > /dev/null
+        taskkill.exe /f /fi "IMAGENAME eq "$argv[(math $$func+1)]"*" /im \* > /dev/null
       case na
         x_wsl "start wt new-tab -p \"Arch Linux\""
       case nac
@@ -73,38 +75,38 @@ function wsl
         set -e WSL_RESTART_WINS
         wslconfig.exe /t $WSL_DISTRO_NAME
       case r
-        while tasklist.exe | grep -i $argv[(math $wsl+2)] > /dev/null
+        while tasklist.exe | grep -i $argv[(math $$func+2)] > /dev/null
           sleep 10
         end
 
-        rm -f $argv[(math $wsl+1)]
+        rm -f $argv[(math $$func+1)]
         set -e WSL_REMOVE_INFO
       case sd
         set -U disk (cmd.exe /c echo %SYSTEMDRIVE% 2> /dev/null | cut -b 1 | tr '[:upper:]' '[:lower:]')
       case su
         set -U user (cmd.exe /c echo %USERNAME% 2> /dev/null | tr -d '$'\r'')
       case t
-        if ! test -z $argv[(math $wsl+1)]
-          switch $argv[(math $wsl+1)]
+        if ! test -z $argv[(math $$func+1)]
+          switch $argv[(math $$func+1)]
           case i
             if test "$WSL_THEME_INFO" = "dark"
               set -U WSL_THEME_INFO light
             else
               set -U WSL_THEME_INFO dark
             end
-            wsl xl xr
+            $func xl xr
           case '*'
-            if test -d ~/.wsl_config/.colors/$argv[(math $wsl+1)]
-              set -U WSL_THEME_INFO $argv[(math $wsl+1)]
-              wsl xl xr
+            if test -d ~/.wsl_config/.colors/$argv[(math $$func+1)]
+              set -U WSL_THEME_INFO $argv[(math $$func+1)]
+              $func xl xr
             else
-              echo "wsl t: theme not found"
+              echo "$func t: theme not found"
               break
             end
           end
         else
           set -U WSL_THEME_INFO dark
-          wsl xl xr
+          $func xl xr
         end
       case xi
         if tasklist.exe | grep -i WindowsTerminal.exe > /dev/null
@@ -118,7 +120,7 @@ function wsl
           end
           t ks
         else
-          echo "wsl xi: settings not found"
+          echo "$func xi: settings not found"
         end
       case xl
         ln -fs ~/.wsl_config/.colors/$WSL_THEME_INFO/colorschemes $WSL_PYPKG_DIR/powerline/config_files/
@@ -131,28 +133,28 @@ function wsl
 
         if tasklist.exe | grep -i WindowsTerminal.exe > /dev/null && test -z $wsl_restart_inv
           sed -i "s/\"colorScheme.*/\"colorScheme\": \"$WSL_THEME_INFO\",/g" $WSL_TERM_FILE
-          echo "\"$wsl_prog_dir\scripts\wsl_restart.bat\" $WSL_DISTRO_NAME \"wt -F\"" | cmd.exe > /dev/null 2> /dev/null
+          echo "\"$wsl_prog_dir\scripts\wsl_restart.bat\" $WSL_DISTRO_NAME \"wt -f\"" | cmd.exe > /dev/null 2> /dev/null
         else if wmic.exe process get name, parentprocessid | grep conhost.exe | grep (wmic.exe process get name, parentprocessid | grep WMIC.exe | tr -d WMIC.exe | tr -d ' ' | tr -d '$'\r'') > /dev/null || ! test -z $wsl_restart_inv
           echo "\"$wsl_prog_dir\ColorTool\ColorTool.exe\" -d -x $WSL_THEME_INFO.itermcolors" | cmd.exe > /dev/null 2> /dev/null
           echo "\"$wsl_prog_dir\scripts\wsl_restart.bat\" $WSL_DISTRO_NAME wsl" | cmd.exe > /dev/null 2> /dev/null
         else
-          echo "wsl xr: program not found"
+          echo "$func xr: program not found"
         end
       case xri
         set -g wsl_restart_inv 1
-        wsl xr
+        $func xr
       case '*'
-        echo "wsl $argv[$wsl]: command not found"
+        echo "$func $argv[$$func]: command not found"
         break
       end
 
-      switch (echo $argv[$wsl] | cut -b 1)
+      switch (echo $argv[$$func] | cut -b 1)
       case c m r
-        set -g wsl (math $wsl+3)
+        set -g $func (math $$func+3)
       case k t
-        set -g wsl (math $wsl+2)
+        set -g $func (math $$func+2)
       case '*'
-        set -g wsl (math $wsl+1)
+        set -g $func (math $$func+1)
       end
     end
   end
