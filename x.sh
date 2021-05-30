@@ -1,11 +1,14 @@
 #!/bin/bash
-#shellcheck source=/home/tobi/.bash_variables
-source /home/"$USER"/.bash_variables
+#shellcheck source=/home/tobi/.bash_functions/.bash_variables
+source /home/"$USER"/.bash_functions/.bash_variables
 
 # Default case
 if [ $# -eq 0 ]
 then
-  cat /etc/{*-release,*_version}
+  uname -r
+  echo "$(cat /etc/*release | grep '^NAME="' | cut -b 6-)" "$(cat /etc/*_version)"
+  # cat /etc/{*-release,*_version}
+  # cat /etc/*_version
 else
   x=1
   while [ -n "${!x}" ]
@@ -15,21 +18,26 @@ else
       cat "$WSL_HELP_DIR"/x
       break
       ;;
+    hx)
+      uname -a
+      printf '\n'
+      cat /etc/{*-release,*_version}
+      ;;
     x_rls0)
       file_Path=$((x+1))
-      echo "\"${!file_Path}\"" | cmd.exe > /dev/null 2> /dev/null &
+      echo "\"${!file_Path}\"" | cmd.exe > /dev/null 2>&1 &
       break
       ;;
     *)
       # Start statements (--> Windows Command Prompt)
       if echo "${!x}" | grep -iq '^start'
       then
-        echo "${!x}" | cmd.exe > /dev/null 2> /dev/null
+        echo "${!x}" | cmd.exe > /dev/null 2>&1
 
       # Internet addresses
       elif echo "${!x}" | grep -qE '^http|www.'
       then
-        echo "\"%SYSTEMDRIVE%\\$WSL_BROWSER_DIR\" \"${!x}\"" | cmd.exe > /dev/null 2> /dev/null
+        echo "\"%SYSTEMDRIVE%\\$WSL_BROWSER_DIR\" \"${!x}\"" | cmd.exe > /dev/null 2>&1
 
       # Windows file paths / WSL / Linux distributions
       else
@@ -92,7 +100,7 @@ else
           if echo "$file_Path" | rev | cut -d'\' -f1 | rev | grep -iqE '.exe$|.bat$|.lnk$'
           then
             # shellcheck disable=SC1117
-            echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+            echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" exe \"$file_Path\"" | cmd.exe > /dev/null 2>&1 &
             sleep 1
             pkill -n cmd.exe
 
@@ -100,18 +108,18 @@ else
           elif [ -d "${!x}" ]
           then
             # shellcheck disable=SC1117
-            echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" dir \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+            echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" dir \"$file_Path\"" | cmd.exe > /dev/null 2>&1 &
 
           # No file extension
           elif echo "$file_Path" | rev | cut -d'\' -f1 | rev | grep -ivq '\.'
           then
             # shellcheck disable=SC1117
-            echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" code \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+            echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" code \"$file_Path\"" | cmd.exe > /dev/null 2>&1 &
 
           # Other file extensions
           else
             # shellcheck disable=SC1117
-            echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" start \"$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+            echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" start \"$file_Path\"" | cmd.exe > /dev/null 2>&1 &
           fi
 
         # Execution within any Linux distribution
@@ -140,14 +148,14 @@ else
             file_Name=$(basename "$file_Path")
             cp "${!x}" /mnt/"$disk"/users/"$user"/
             # shellcheck disable=SC1117
-            echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" start \"%USERPROFILE%\\$file_Name\"" | cmd.exe > /dev/null 2> /dev/null &
+            echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" start \"%USERPROFILE%\\$file_Name\"" | cmd.exe > /dev/null 2>&1 &
 
             # Delete the file after it has been closed
             # shellcheck disable=SC1003
             value="/mnt/$disk/users/$user/${!x}":$(echo "$WSL_BROWSER_DIR" | rev | cut -d'\\' -f1 | rev)
             export WSL_REMOVE_INFO=$value
             # shellcheck disable=SC2016
-            fish -c 'wsl r $WSL_REMOVE_INFO' > /dev/null 2> /dev/null &
+            fish -c 'wsl r $WSL_REMOVE_INFO' > /dev/null 2>&1 &
 
           # Check if the current distribution is registered as a valid distribution in the WSL (--> $WSL_X_DIR)
           elif [ -n "${!WSL_DISTRO_DIR}" ]
@@ -157,7 +165,7 @@ else
             if echo "$file_Path" | rev | cut -d"/" -f1 | rev | grep -iqE '.exe$|.bat$|.lnk$'
             then
               # shellcheck disable=SC1117
-              echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" exe \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+              echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" exe \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2>&1 &
               sleep 1
               pkill -n cmd.exe
 
@@ -174,7 +182,7 @@ else
             # Other file extensions
             else
               # shellcheck disable=SC1117
-              echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" cmd \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2> /dev/null &
+              echo "\"$WSL_PROG_DIR\scripts\wsl_start.bat\" cmd \"\\\\wsl\$\\$WSL_DISTRO_NAME\\$file_Path\"" | cmd.exe > /dev/null 2>&1 &
             fi
 
           # Distribution is not compatible / Distribution needs to be registered (--> $WSL_X_DIR)
