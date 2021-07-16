@@ -52,12 +52,12 @@ else
 
         if echo ${!tmp} | grep -iqE '^[a-z]:|^%SYSTEMDRIVE%|^%USERPROFILE%|^%APPDATA%|^%LOCALAPPDATA%|^%OneDrive%'
         then
-          file_Path=$(readlink -f ${!tmp} | sed "s|$PWD||g" | cut -b 2-)
+          file_Path=$(readlink -f "${!tmp}" | sed "s|$PWD||g" | cut -b 2-)
         elif readlink -f ${!tmp} | grep -iq '/mnt/[a-z]/'
         then
-          file_Path=$(readlink -f ${!tmp} | sed 's|\/|\\|g' | cut -b 6- | sed 's/^\(.\{1\}\)/\1:/')
+          file_Path=$(readlink -f "${!tmp}" | sed 's|\/|\\|g' | cut -b 6- | sed 's/^\(.\{1\}\)/\1:/')
         else
-          file_Path=$(readlink -f ${!tmp})
+          file_Path=$(readlink -f "${!tmp}")
         fi
 
         # Default function call with character encoding conversion
