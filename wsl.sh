@@ -4,7 +4,7 @@ source /home/"$USER"/.bash_functions/.bash_variables
 
 if [ $# -eq 0 ]
 then
-  "$WSL_BASH_DIR"/x.sh x_rls0 "wt"
+  "$WSL_BASH_DIR"/.public/x.sh x_rls0 "wt"
 else
   wsl=1
   while [ -n "${!wsl}" ]
@@ -47,7 +47,7 @@ else
           ;;
       esac
       wsl_prog_dir="${WSL_PROG_DIR//\//\\}"
-      "$WSL_BASH_DIR"/x.sh "$wsl_prog_dir\\scripts\\wsl_${distro_Name}_get.exe"
+      "$WSL_BASH_DIR"/.public/x.sh "$wsl_prog_dir\\scripts\\wsl_${distro_Name}_get.exe"
       ;;
     g)
       rsync -a "${WSL_PROG_DIR:?}"/"${WSL_DISTRO_NAME:?}"/* ~/
@@ -66,40 +66,40 @@ else
       taskkill.exe /f /fi "IMAGENAME eq ${!args}*" /im \* > /dev/null
       ;;
     na)
-      "$WSL_BASH_DIR"/x.sh "start wt new-tab -p \"Arch Linux\""
+      "$WSL_BASH_DIR"/.public/x.sh "start wt new-tab -p \"Arch Linux\""
       ;;
     naws)
-      "$WSL_BASH_DIR"/x.sh "start wt new-tab -p \"AWS Shell\""
+      "$WSL_BASH_DIR"/.public/x.sh "start wt new-tab -p \"AWS Shell\""
       ;;
     naz)
-      "$WSL_BASH_DIR"/x.sh "start wt new-tab -p \"Azure Cloud Shell\""
+      "$WSL_BASH_DIR"/.public/x.sh "start wt new-tab -p \"Azure Cloud Shell\""
       ;;
     nb)
-      "$WSL_BASH_DIR"/x.sh "start bash"
+      "$WSL_BASH_DIR"/.public/x.sh "start bash"
       ;;
     nc)
-      "$WSL_BASH_DIR"/x.sh "start wt new-tab -p \"Command Prompt\""
+      "$WSL_BASH_DIR"/.public/x.sh "start wt new-tab -p \"Command Prompt\""
       ;;
     nd)
-      "$WSL_BASH_DIR"/x.sh "start wt new-tab -p \"Debian\""
+      "$WSL_BASH_DIR"/.public/x.sh "start wt new-tab -p \"Debian\""
       ;;
     ndo)
-      "$WSL_BASH_DIR"/x.sh "start wt new-tab -p \"Docker\""
+      "$WSL_BASH_DIR"/.public/x.sh "start wt new-tab -p \"Docker\""
       ;;
     nf)
-      "$WSL_BASH_DIR"/x.sh "start wt -F"
+      "$WSL_BASH_DIR"/.public/x.sh "start wt -F"
       ;;
     ngc)
-      "$WSL_BASH_DIR"/x.sh "start wt new-tab -p \"Google Cloud Platform\""
+      "$WSL_BASH_DIR"/.public/x.sh "start wt new-tab -p \"Google Cloud Platform\""
       ;;
     nk)
-      "$WSL_BASH_DIR"/x.sh "start wt new-tab -p \"Kali Linux\""
+      "$WSL_BASH_DIR"/.public/x.sh "start wt new-tab -p \"Kali Linux\""
       ;;
     nps)
-      "$WSL_BASH_DIR"/x.sh "start wt new-tab -p \"PowerShell\""
+      "$WSL_BASH_DIR"/.public/x.sh "start wt new-tab -p \"PowerShell\""
       ;;
     nu)
-      "$WSL_BASH_DIR"/x.sh "start wt new-tab -p \"Ubuntu\""
+      "$WSL_BASH_DIR"/.public/x.sh "start wt new-tab -p \"Ubuntu\""
       ;;
     q)
       unset WSL_RESTART_INFO
@@ -136,13 +136,13 @@ else
           else
             export WSL_THEME_INFO=dark
           fi
-          "$WSL_BASH_DIR"/wsl.sh xl xr
+          "$WSL_BASH_DIR"/.public/wsl.sh xl xr
           ;;
         *)
           if [ -d ~/.wsl_config/.colors/"${!arg}" ]
           then
             export WSL_THEME_INFO="${!arg}"
-            "$WSL_BASH_DIR"/wsl.sh xl xr
+            "$WSL_BASH_DIR"/.public/wsl.sh xl xr
           else
             echo "wsl t: theme not found"
             break
@@ -151,7 +151,7 @@ else
         esac
       else
         export WSL_THEME_INFO=dark
-        "$WSL_BASH_DIR"/wsl.sh xl xr
+        "$WSL_BASH_DIR"/.public/wsl.sh xl xr
       fi
       ;;
     xi)
@@ -160,16 +160,16 @@ else
       then
         for session in $WSL_RESTART_WINS
         do
-          "$WSL_BASH_DIR"/x.sh "start wt"
+          "$WSL_BASH_DIR"/.public/x.sh "start wt"
         done
-        "$WSL_BASH_DIR"/t.sh ks
+        "$WSL_BASH_DIR"/.general/t.sh ks
       elif wmic.exe process get name, parentprocessid | grep conhost.exe | grep "$(wmic.exe process get name, parentprocessid | grep WMIC.exe | tr -d WMIC.exe | tr -d ' ' | tr -d '$'\r'')" > /dev/null
       then
         for session in $WSL_RESTART_WINS
         do
-          "$WSL_BASH_DIR"/x.sh "start wsl tmux new-session -s $session"
+          "$WSL_BASH_DIR"/.public/x.sh "start wsl tmux new-session -s $session"
         done
-        "$WSL_BASH_DIR"/t.sh ks
+        "$WSL_BASH_DIR"/.general/t.sh ks
       else
         echo "wsl xi: settings not found"
       fi
@@ -202,7 +202,7 @@ else
       ;;
     xri)
       wsl_restart_inv=1
-      "$WSL_BASH_DIR"/wsl.sh xr
+      "$WSL_BASH_DIR"/.public/wsl.sh xr
       ;;
     *)
       echo "wsl ${!wsl}: command not found"
