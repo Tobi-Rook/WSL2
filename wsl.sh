@@ -136,13 +136,11 @@ else
           else
             export WSL_THEME_INFO=dark
           fi
-          "$WSL_BASH_DIR"/.public/wsl.sh xl xr
           ;;
         *)
-          if [ -d ~/.wsl_config/.colors/"${!arg}" ]
+          if [ -d "$WSL_CONFIG_DIR"/.colors/"${!arg}" ]
           then
             export WSL_THEME_INFO="${!arg}"
-            "$WSL_BASH_DIR"/.public/wsl.sh xl xr
           else
             echo "wsl t: theme not found"
             break
@@ -151,8 +149,9 @@ else
         esac
       else
         export WSL_THEME_INFO=dark
-        "$WSL_BASH_DIR"/.public/wsl.sh xl xr
       fi
+      sed -i "s/export    WSL_THEME_INFO.*/export    WSL_THEME_INFO=\"$WSL_THEME_INFO\"/g" "$WSL_BASH_DIR"/.variables/"$HOSTNAME"
+      "$WSL_BASH_DIR"/.public/wsl.sh xl xr
       ;;
     xi)
       # shellcheck disable=SC1012,SC2020,SC2026
@@ -175,9 +174,9 @@ else
       fi
       ;;
     xl)
-      ln -fs ~/.wsl_config/.colors/"$WSL_THEME_INFO"/colorschemes "$WSL_PYPKG_DIR"/powerline/config_files/
-      ln -fs ~/.wsl_config/.colors/"$WSL_THEME_INFO"/.vimrc ~/.vimrc
-      ln -fs ~/.wsl_config/.colors/"$WSL_THEME_INFO"/.dircolors ~/.dircolors
+      ln -fs "$WSL_CONFIG_DIR"/.colors/"$WSL_THEME_INFO"/colorschemes "$WSL_PYPKG_DIR"/powerline/config_files/
+      ln -fs "$WSL_CONFIG_DIR"/.colors/"$WSL_THEME_INFO"/.vimrc ~/.vimrc
+      ln -fs "$WSL_CONFIG_DIR"/.colors/"$WSL_THEME_INFO"/.dircolors ~/.dircolors
       ;;
     xr)
       values=("$PWD" "$(history | head -1)")
