@@ -6,9 +6,7 @@ source /home/"$USER"/.bash_functions/.bash_variables
 if [ $# -eq 0 ]
 then
   uname -r
-  echo "$(cat /etc/*release | grep '^NAME="' | cut -b 6-)" "$(cat /etc/*_version)"
-  # cat /etc/{*-release,*_version}
-  # cat /etc/*_version
+  echo "$(cat /etc/*release | grep '^NAME="' | cut -b 6-)" "$(cat /etc/*_version)" "$(cat /etc/*release | grep '^VERSION_CODENAME=' | cut -b 18-)"
 else
   x=1
   while [ -n "${!x}" ]
