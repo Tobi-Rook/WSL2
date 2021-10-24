@@ -162,13 +162,6 @@ else
           "$WSL_BASH_DIR"/.public/x.sh "start wt"
         done
         "$WSL_BASH_DIR"/.general/t.sh ks
-      elif wmic.exe process get name, parentprocessid | grep conhost.exe | grep "$(wmic.exe process get name, parentprocessid | grep WMIC.exe | tr -d WMIC.exe | tr -d ' ' | tr -d '$'\r'')" > /dev/null
-      then
-        for session in $WSL_RESTART_WINS
-        do
-          "$WSL_BASH_DIR"/.public/x.sh "start wsl tmux new-session -s $session"
-        done
-        "$WSL_BASH_DIR"/.general/t.sh ks
       else
         echo "wsl xi: settings not found"
       fi
@@ -191,10 +184,6 @@ else
       then
         sed -i "s/\"colorScheme.*/\"colorScheme\": \"$WSL_THEME_INFO\",/g" "$WSL_TERM_FILE"
         echo "\"$wsl_prog_dir\\scripts\\wsl_restart.bat\" $WSL_DISTRO_NAME \"wt\"" | cmd.exe > /dev/null 2>&1
-      elif wmic.exe process get name, parentprocessid | grep conhost.exe | grep "$(wmic.exe process get name, parentprocessid | grep WMIC.exe | tr -d WMIC.exe | tr -d ' ' | tr -d '$'\r'')" > /dev/null || ! test -z "$wsl_restart_inv"
-      then
-        echo "\"$wsl_prog_dir\\ColorTool\\ColorTool.exe\" -d -x $WSL_THEME_INFO.itermcolors" | cmd.exe > /dev/null 2>&1
-        echo "\"$wsl_prog_dir\\scripts\\wsl_restart.bat\" $WSL_DISTRO_NAME wsl" | cmd.exe > /dev/null 2>&1
       else
         echo "wsl xr: program not found"
       fi
