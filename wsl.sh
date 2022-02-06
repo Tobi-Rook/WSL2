@@ -102,8 +102,6 @@ else
       "$WSL_BASH_DIR"/.public/x.sh "start wt new-tab -p \"Ubuntu\""
       ;;
     q)
-      unset WSL_RESTART_INFO
-      unset WSL_RESTART_WINS
       wslconfig.exe /t "$WSL_DISTRO_NAME"
       ;;
     r)
@@ -153,31 +151,12 @@ else
       sed -i "s/export    WSL_THEME_INFO.*/export    WSL_THEME_INFO=\"$WSL_THEME_INFO\"/g" "$WSL_BASH_DIR"/.variables/"$HOSTNAME"
       "$WSL_BASH_DIR"/.public/wsl.sh xl xr
       ;;
-    xi)
-      # shellcheck disable=SC1012,SC2020,SC2026
-      if tasklist.exe | grep -i WindowsTerminal.exe > /dev/null
-      then
-        for session in $WSL_RESTART_WINS
-        do
-          "$WSL_BASH_DIR"/.public/x.sh "start wt"
-        done
-        "$WSL_BASH_DIR"/.general/t.sh ks
-      else
-        echo "wsl xi: settings not found"
-      fi
-      ;;
     xl)
       ln -fs "$WSL_CONFIG_DIR"/.colors/"$WSL_THEME_INFO"/colorschemes "$WSL_PYPKG_DIR"/powerline/config_files/
       ln -fs "$WSL_CONFIG_DIR"/.colors/"$WSL_THEME_INFO"/.vimrc ~/.vimrc
       ln -fs "$WSL_CONFIG_DIR"/.colors/"$WSL_THEME_INFO"/.dircolors ~/.dircolors
       ;;
     xr)
-      values=("$PWD" "$(history | head -1)")
-      export WSL_RESTART_INFO=${values[*]}
-
-      value=$(tmux list-sessions -F "#{session_name}")
-      export WSL_RESTART_WINS=$value
-
       wsl_prog_dir="${WSL_PROG_DIR//\//\\}"
       # shellcheck disable=SC1012,SC2020,SC2026
       if tasklist.exe | grep -i WindowsTerminal.exe > /dev/null && [ -z "$wsl_restart_inv" ]
