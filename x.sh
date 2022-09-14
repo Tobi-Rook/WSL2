@@ -35,7 +35,7 @@ else
       # Internet addresses
       elif echo "${!x}" | grep -qE '^http|www.'
       then
-        echo "\"%SYSTEMDRIVE%\\$WSL_BROWSER_DIR\" \"${!x}\"" | cmd.exe > /dev/null 2>&1
+        "${WSL_BROWSER_BIN}" "${!x}"
 
       # Windows file paths / WSL / Linux distributions
       else
