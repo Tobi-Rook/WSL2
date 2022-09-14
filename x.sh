@@ -53,7 +53,7 @@ else
           file_Path=$(readlink -f "${!tmp}" | sed "s|$PWD||g" | cut -b 2-)
         elif readlink -f ${!tmp} | grep -iq '/mnt/[a-z]/'
         then
-          file_Path=$(readlink -f "${!tmp}" | sed 's|\/|\\|g' | cut -b 6- | sed 's/^\(.\{1\}\)/\1:/')
+          file_Path=$(wslpath -w "${!tmp}")
         else
           file_Path=$(readlink -f "${!tmp}")
         fi
