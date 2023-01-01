@@ -5,8 +5,8 @@ source /home/"$USER"/.bash_functions/.bash_variables
 # Default case
 if [ $# -eq 0 ]
 then
-  uname -r
-  echo "$(cat /etc/*release | grep '^NAME="' | cut -b 6-)" "$(cat /etc/*_version)" "$(cat /etc/*release | grep '^VERSION_CODENAME=' | cut -b 18-)"
+  wsl.exe -v
+  echo "$(cat /etc/*release | grep '^NAME="' | sed -e 's/[^"]*"//' -e 's/"$//') version:" "$(cat /etc/*_version)" "$(cat /etc/*release | grep '^VERSION_CODENAME=' | sed -e 's/[^=]*=//')"
 else
   x=1
   while [ -n "${!x}" ]
